@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "CommonJS",
     "outDir": "./dist",
-    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts", "app.ts"],
   "exclude": ["node_modules"]
 }
