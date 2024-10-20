@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import { checkUserExists } from "../db/queries";
-
 const router = Router();
 
 // Login route
@@ -12,7 +11,7 @@ router.post("/login", (req: Request, res: Response) => {
 });
 
 // Logout route
-router.get("/logout", (req: Request, res: Response) => {
+router.post("/logout", (req: Request, res: Response) => {
   // Logout logic here
   res.send("Logout endpointsss");
 });

@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import loginRouter from "./src/routes/auth";
+import selectRouter from "./src/routes/selectData";
 // import dotenv from "dotenv";
 // dotenv.config();
 // import morgan from "morgan";
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 // app.use(morgan("dev"));
 app.use("/auth", loginRouter);
+app.use("/get", selectRouter);
 
 // Start server
 app.listen(port, () => {

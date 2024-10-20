@@ -13,3 +13,13 @@ export const checkUserExists = (userId: string) => {
     ? { operation: true, result: user }
     : { operation: false, errorMessage: "User does not exist" };
 };
+
+export const selectUser = (userId: string) => {
+  const query = "SELECT * FROM users WHERE userid = ?";
+  return db.prepare(query).get(userId);
+};
+
+export const selectUserProgress = (userId: string) => {
+  const query = "SELECT * FROM progress WHERE userid = ?";
+  return db.prepare(query).get(userId);
+};
