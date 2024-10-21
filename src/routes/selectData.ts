@@ -1,19 +1,56 @@
 import { Router, Request, Response } from "express";
-import { selectUser, selectUserProgress } from "../db/queries";
-const router = Router();
+import {
+  selectUser,
+  selectUserAttempts,
+  selectUserProgress,
+  selectUserScores,
+} from "../db/queries";
 import { GAME_DATA } from "../services/gameData";
+export const router = Router();
 
 // Login route
 router.get("/select-user", (req: Request, res: Response) => {
-  const { userid } = req.body;
-  const result = selectUser(userid);
-  res.send(result);
+  const { userid } = req.query;
+
+  if (typeof userid === "string") {
+    const result = selectUser(userid);
+    res.send(result);
+  } else {
+    res.status(400).send("Invalid userid");
+  }
 });
 
 router.get("/user-progress", (req: Request, res: Response) => {
-  const { userid } = req.body;
-  const result = selectUserProgress(userid);
-  res.send(result);
+  const { userid } = req.query;
+
+  if (typeof userid === "string") {
+    const result = selectUserProgress(userid);
+    res.send(result);
+  } else {
+    res.status(400).send("Invalid userid");
+  }
+});
+
+router.get("/user-attempts", (req: Request, res: Response) => {
+  const { userid } = req.query;
+
+  if (typeof userid === "string") {
+    const result = selectUserAttempts(userid);
+    res.send(result);
+  } else {
+    res.status(400).send("Invalid userid");
+  }
+});
+
+router.get("/user-scores", (req: Request, res: Response) => {
+  const { userid } = req.query;
+
+  if (typeof userid === "string") {
+    const result = selectUserScores(userid);
+    res.send(result);
+  } else {
+    res.status(400).send("Invalid userid");
+  }
 });
 
 // Get game data including active dates, questions and answers

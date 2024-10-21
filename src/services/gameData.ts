@@ -10,7 +10,7 @@ export const GAME_DATA = {
     },
   },
   week2: {
-    activeDate: "2024-10-20",
+    activeDate: "2024-10-21",
     allQuestions: {
       e1: [{}],
       e2: [{}],

@@ -10,10 +10,29 @@ const db = new Database("ges.db");
 //     role STRING
 // )`;
 
+// const query = `
+//     DROP TABLE IF EXISTS progress;
+//     CREATE TABLE progress (
+//       userid STRING PRIMARY KEY,
+//       week1 TEXT DEFAULT NULL,
+//       week2 TEXT DEFAULT NULL,
+//       week3 TEXT DEFAULT NULL,
+//       week4 TEXT DEFAULT NULL,
+//       week5 TEXT DEFAULT NULL,
+//       week6 TEXT DEFAULT NULL,
+//       week7 TEXT DEFAULT NULL,
+//       week8 TEXT DEFAULT NULL,
+//       week9 TEXT DEFAULT NULL,
+//       week10 TEXT DEFAULT NULL,
+//       week11 TEXT DEFAULT NULL,
+//       week12 TEXT DEFAULT NULL,
+//       FOREIGN KEY (userid) REFERENCES users(userid)
+// )`;
+
 const query = `
-    DROP TABLE IF EXISTS progress;
-    CREATE TABLE progress (
-      userid STRING PRIMARY KEY,     
+    DROP TABLE IF EXISTS scores;
+    CREATE TABLE scores (
+      userid STRING PRIMARY KEY,
       week1 TEXT DEFAULT NULL,
       week2 TEXT DEFAULT NULL,
       week3 TEXT DEFAULT NULL,
@@ -26,8 +45,28 @@ const query = `
       week10 TEXT DEFAULT NULL,
       week11 TEXT DEFAULT NULL,
       week12 TEXT DEFAULT NULL,
-      FOREIGN KEY (userid) REFERENCES users(userid) 
+      stars INTEGER DEFAULT 0,
+      FOREIGN KEY (userid) REFERENCES users(userid)
 )`;
+
+// const query = `
+//     DROP TABLE IF EXISTS attempts;
+//     CREATE TABLE attempts (
+//       userid STRING PRIMARY KEY,
+//       week1 INTEGER DEFAULT 0,
+//       week2 INTEGER DEFAULT 0,
+//       week3 INTEGER DEFAULT 0,
+//       week4 INTEGER DEFAULT 0,
+//       week5 INTEGER DEFAULT 0,
+//       week6 INTEGER DEFAULT 0,
+//       week7 INTEGER DEFAULT 0,
+//       week8 INTEGER DEFAULT 0,
+//       week9 INTEGER DEFAULT 0,
+//       week10 INTEGER DEFAULT 0,
+//       week11 INTEGER DEFAULT 0,
+//       week12 INTEGER DEFAULT 0,
+//       FOREIGN KEY (userid) REFERENCES users(userid)
+// )`;
 
 db.exec(query);
 
