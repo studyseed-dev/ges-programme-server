@@ -35,6 +35,12 @@ export const selectUser = (userId: string) => {
 
 export const selectUserProgress = (userId: string) => {
   const query = "SELECT * FROM progress WHERE userid = ?";
+
+  const res = db.prepare(query).get(userId);
+  if (!res) {
+    const init = `INSERT INTO progress (userid) VALUES (?)`;
+    db.prepare(init).run(userId);
+  }
   return db.prepare(query).get(userId);
 };
 
@@ -46,11 +52,23 @@ export const checkWeeklyLogin = (userId: string, week: string) => {
 
 export const selectUserScores = (userId: string) => {
   const query = "SELECT * FROM scores WHERE userid = ?";
+  const res = db.prepare(query).get(userId);
+  if (!res) {
+    /** if undefined means no rows exist for this user yet */
+    const init = `INSERT INTO scores (userid) VALUES (?)`;
+    db.prepare(init).run(userId);
+  }
   return db.prepare(query).get(userId);
 };
 
 export const selectUserAttempts = (userId: string) => {
   const query = "SELECT * FROM attempts WHERE userid = ?";
+  const res = db.prepare(query).get(userId);
+  if (!res) {
+    /** if undefined means no rows exist for this user yet */
+    const init = `INSERT INTO attempts (userid) VALUES (?)`;
+    db.prepare(init).run(userId);
+  }
   return db.prepare(query).get(userId);
 };
 
@@ -60,6 +78,20 @@ export const updateUserProgress = (userId: string, week: WeekString, date: strin
 };
 
 export const updateAttemptCount = (userId: string, week: WeekString, newCount: string) => {
-  const query = `UPDATE progress SET ${week} = ? WHERE userid = ?`;
-  return db.prepare(query).run(newCount, userId);
+  const userAttempts = selectUserAttempts(userId);
+  if (!userAttempts) {
+    /** if empty rows, means user has not attempted any quiz */
+    const query = `INSERT INTO attempts (userid, ${week}) VALUES (?, ?)`;
+    return db.prepare(query).run(userId, 1); /** new entry always starts with 1 */
+  }
+
+  let currentWeekCount = 0;
+  if (userAttempts) {
+    currentWeekCount = (userAttempts as Record<string, number>)[week];
+  }
+  const query = `UPDATE attempts SET ${week} = ? WHERE userid = ?`;
+  return db.prepare(query).run(currentWeekCount + 1, userId);
 };
+
+console.log(updateAttemptCount("STU999", "week1", "1"));
+// console.log(selectUserAttempts("STU990"));

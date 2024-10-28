@@ -4,10 +4,11 @@ const db = new Database("ges.db");
 
 // const query = `
 //     CREATE TABLE users (
-//     userid STRING PRIMARY KEY,
-//     first_name STRING NOT NULL,
-//     last_name STRING NOT NULL,
-//     role STRING
+//     userid TEXT PRIMARY KEY,
+//     first_name TEXT NOT NULL,
+//     last_name TEXT NOT NULL,
+//     role TEXT,
+//     avatar TEXT DEFAULT 'https://ik.imagekit.io/jbyap95/sam_colon.png'
 // )`;
 
 // const query = `
@@ -83,14 +84,20 @@ db.exec(query);
 //   role: UserRole;
 // };
 
-// const adminUsers: Omit<User, "first_name" | "last_name">[] = [
-//   { userid: "ADMIN001", role: "ADMIN" },
-//   { userid: "ADMIN002", role: "ADMIN" },
-// ];
-
 // const users: Required<User>[] = [
-//   { userid: "STU999", first_name: "Studyseed", last_name: "Samuel", role: "ADMIN" },
-//   { userid: "STU998", first_name: "Studyseed", last_name: "Samantha", role: "ADMIN" },
+//   // { userid: "STU999", first_name: "Studyseed", last_name: "Samuel", role: "ADMIN" },
+//   // { userid: "STU998", first_name: "Studyseed", last_name: "Samantha", role: "ADMIN" },
+//   { userid: "CA01YQ", first_name: "Chloe", last_name: "Adams", role: "STUDENT" },
+//   { userid: "LSO1TH", first_name: "Louise", last_name: "Swain", role: "STUDENT" },
+//   { userid: "DC01HU", first_name: "Dawn", last_name: "Cairns", role: "STUDENT" },
+//   { userid: "EB01UT", first_name: "Essy", last_name: "Baxter", role: "STUDENT" },
+//   { userid: "KM01UD", first_name: "Karen", last_name: "Maxwell", role: "STUDENT" },
+//   { userid: "AA01LZ", first_name: "Abigail", last_name: "Avery", role: "STUDENT" },
+//   { userid: "LG01AB", first_name: "Lucie", last_name: "Gemini", role: "STUDENT" },
+//   { userid: "KG01ZU", first_name: "Kirsty", last_name: "Graham", role: "STUDENT" },
+//   { userid: "MO01ZR", first_name: "Michaela", last_name: "Oates", role: "STUDENT" },
+//   { userid: "DM01QR", first_name: "Dionne", last_name: "Madden", role: "STUDENT" },
+//   { userid: "KC01PQ", first_name: "Kieron", last_name: "Connaghan", role: "STUDENT" },
 // ];
 
 // const insertData = db.prepare(
