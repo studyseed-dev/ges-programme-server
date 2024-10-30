@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import {
+  incrementStars,
   selectUser,
   selectUserAttempts,
   updateAttemptCount,
@@ -26,6 +27,17 @@ router.post("/weekly-progress", (req: Request, res: Response) => {
     res.send(result);
   } else {
     res.status(400).send("Invalid userid or week or date");
+  }
+});
+
+router.post("/user-stars", (req: Request, res: Response) => {
+  const { userid, amount } = req.body;
+
+  if (typeof userid === "string") {
+    const result = incrementStars(userid, amount);
+    res.send(result);
+  } else {
+    res.status(400).send("Invalid userid or star amount");
   }
 });
 

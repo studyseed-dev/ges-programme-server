@@ -72,9 +72,45 @@ export const selectUserAttempts = (userId: string) => {
   return db.prepare(query).get(userId);
 };
 
+// This should be called when user passed a tile/town
 export const updateUserProgress = (userId: string, week: WeekString, date: string) => {
   const query = `UPDATE progress SET ${week} = ? WHERE userid = ?`;
   return db.prepare(query).run(date, userId);
+};
+
+// This should be called when user passed a tile/town
+export const updateUserScore = (userId: string, week: WeekString, date: string) => {
+  const query = `UPDATE score SET ${week} = ? WHERE userid = ?`;
+  return db.prepare(query).run(date, userId);
+};
+
+// Combined of the above 2 functions
+export const updateUserProgressAndScore = (userId: string, week: WeekString, date: string) => {
+  const progressQuery = `UPDATE progress SET ${week} = ? WHERE userid = ?`;
+  const scoreQuery = `UPDATE scores SET ${week} = ? WHERE userid = ?`;
+
+  const progressStmt = db.prepare(progressQuery);
+  const scoreStmt = db.prepare(scoreQuery);
+
+  const progressResult = progressStmt.run(date, userId);
+  const scoreResult = scoreStmt.run(date, userId);
+
+  return {
+    progressResult,
+    scoreResult,
+  };
+};
+
+export const getUserStarsCount = (userId: string) => {
+  const query = `SELECT stars from scores WHERE userid = ?`;
+  return db.prepare(query).get(userId);
+};
+
+export const incrementStars = (userId: string, amountToIncre: number) => {
+  const currentStars = getUserStarsCount(userId) as number;
+  const newStarsCount = currentStars + amountToIncre;
+  const query = `UPDATE score SET stars = ? WHERE userid = ?`;
+  return db.prepare(query).run(newStarsCount, userId);
 };
 
 export const updateAttemptCount = (userId: string, week: WeekString, newCount: string) => {
@@ -92,6 +128,3 @@ export const updateAttemptCount = (userId: string, week: WeekString, newCount: s
   const query = `UPDATE attempts SET ${week} = ? WHERE userid = ?`;
   return db.prepare(query).run(currentWeekCount + 1, userId);
 };
-
-console.log(updateAttemptCount("STU999", "week1", "1"));
-// console.log(selectUserAttempts("STU990"));
