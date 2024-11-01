@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import {
+  getUserStarsCount,
   selectUser,
   selectUserAttempts,
   selectUserProgress,
@@ -37,7 +38,6 @@ router.get("/user-attempts", (req: Request, res: Response) => {
 
   if (typeof userid === "string") {
     const result = selectUserAttempts(userid);
-    console.log("result", result);
     res.send(result);
   } else {
     res.status(400).send("Invalid userid");
@@ -70,4 +70,17 @@ router.get("/weekly-questions", (req: Request, res: Response) => {
   } else throw new Error("Invalid week");
 });
 
+router.get("/stars-count", (req: Request, res: Response) => {
+  const { userid } = req.query;
+
+  if (typeof userid === "string") {
+    const result = getUserStarsCount(userid);
+    res.send(result);
+  } else {
+    res.status(400).send("Invalid userid");
+  }
+});
+
 export default router;
+
+// select p.userid, p.week1 as P, a.week1 as A, s.week1 as S, stars from progress p, attempts a, scores s where p.userid=a.userid AND a.userid=s.userid AND p.userid='STU999';

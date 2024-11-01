@@ -75,29 +75,34 @@ db.exec(query);
 //   "INSERT INTO progress (userid, first_name, last_name, role) VALUES (?, ?, ?, ?)"
 // );
 
-// type UserRole = "STUDENT" | "ADMIN";
+type UserRole = "STUDENT" | "ADMIN";
 
-// type User = {
-//   userid: string;
-//   first_name: string;
-//   last_name: string;
-//   role: UserRole;
-// };
+type User = {
+  userid: string;
+  first_name: string;
+  last_name: string;
+  role: UserRole;
+};
 
 // const users: Required<User>[] = [
 //   // { userid: "STU999", first_name: "Studyseed", last_name: "Samuel", role: "ADMIN" },
 //   // { userid: "STU998", first_name: "Studyseed", last_name: "Samantha", role: "ADMIN" },
-//   { userid: "CA01YQ", first_name: "Chloe", last_name: "Adams", role: "STUDENT" },
-//   { userid: "LSO1TH", first_name: "Louise", last_name: "Swain", role: "STUDENT" },
-//   { userid: "DC01HU", first_name: "Dawn", last_name: "Cairns", role: "STUDENT" },
-//   { userid: "EB01UT", first_name: "Essy", last_name: "Baxter", role: "STUDENT" },
-//   { userid: "KM01UD", first_name: "Karen", last_name: "Maxwell", role: "STUDENT" },
-//   { userid: "AA01LZ", first_name: "Abigail", last_name: "Avery", role: "STUDENT" },
-//   { userid: "LG01AB", first_name: "Lucie", last_name: "Gemini", role: "STUDENT" },
-//   { userid: "KG01ZU", first_name: "Kirsty", last_name: "Graham", role: "STUDENT" },
-//   { userid: "MO01ZR", first_name: "Michaela", last_name: "Oates", role: "STUDENT" },
-//   { userid: "DM01QR", first_name: "Dionne", last_name: "Madden", role: "STUDENT" },
-//   { userid: "KC01PQ", first_name: "Kieron", last_name: "Connaghan", role: "STUDENT" },
+//   // { userid: "CA01YQ", first_name: "Chloe", last_name: "Adams", role: "STUDENT" },
+//   // { userid: "LSO1TH", first_name: "Louise", last_name: "Swain", role: "STUDENT" },
+//   // { userid: "DC01HU", first_name: "Dawn", last_name: "Cairns", role: "STUDENT" },
+//   // { userid: "EB01UT", first_name: "Essy", last_name: "Baxter", role: "STUDENT" },
+//   // { userid: "KM01UD", first_name: "Karen", last_name: "Maxwell", role: "STUDENT" },
+//   // { userid: "AA01LZ", first_name: "Abigail", last_name: "Avery", role: "STUDENT" },
+//   // { userid: "LG01AB", first_name: "Lucie", last_name: "Gemini", role: "STUDENT" },
+//   // { userid: "KG01ZU", first_name: "Kirsty", last_name: "Graham", role: "STUDENT" },
+//   // { userid: "MO01ZR", first_name: "Michaela", last_name: "Oates", role: "STUDENT" },
+//   // { userid: "DM01QR", first_name: "Dionne", last_name: "Madden", role: "STUDENT" },
+//   // { userid: "KC01PQ", first_name: "Kieron", last_name: "Connaghan", role: "STUDENT" },
+//   // { userid: "KA01BG", first_name: "Konouz", last_name: "Alhamad", role: "STUDENT" },
+//   // { userid: "GC01HS", first_name: "Gina", last_name: "Carter", role: "STUDENT" },
+//   // { userid: "JB01ZX", first_name: "Jena", last_name: "Beaumont", role: "STUDENT" },
+//   // { userid: "TI01DT", first_name: "Tomasz", last_name: "Ignasiewicz", role: "STUDENT" },
+//   // { userid: "HA01HF", first_name: "Hazar", last_name: "Alzaw", role: "STUDENT" },
 // ];
 
 // const insertData = db.prepare(

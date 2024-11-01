@@ -4,6 +4,7 @@ import cors from "cors";
 import loginRouter from "./src/routes/auth";
 import selectRouter from "./src/routes/selectData";
 import updateRouter from "./src/routes/updateData";
+import adminRouter from "./src/routes/admin";
 // import dotenv from "dotenv";
 // dotenv.config();
 // import morgan from "morgan";
@@ -21,6 +22,7 @@ app.use(cors());
 app.use("/auth", loginRouter);
 app.use("/get", selectRouter);
 app.use("/update", updateRouter);
+app.use("/admin", adminRouter);
 
 // Start server
 app.listen(port, () => {

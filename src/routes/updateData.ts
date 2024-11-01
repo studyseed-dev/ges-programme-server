@@ -1,29 +1,17 @@
 import { Router, Request, Response } from "express";
 import {
   incrementStars,
-  selectUser,
-  selectUserAttempts,
   updateAttemptCount,
-  updateUserProgress,
+  updateUserProgressAndScore,
+  WeekString,
 } from "../db/queries";
 const router = Router();
 
-router.post("/select-user", (req: Request, res: Response) => {
-  const { userid } = req.body;
-
-  if (typeof userid === "string") {
-    const result = selectUser(userid);
-    res.send(result);
-  } else {
-    res.status(400).send("Invalid userid");
-  }
-});
-
 router.post("/weekly-progress", (req: Request, res: Response) => {
-  const { userid, week, date } = req.body;
+  const { userid, week, date, scores } = req.body;
 
   if (typeof userid === "string") {
-    const result = updateUserProgress(userid, week, date);
+    const result = updateUserProgressAndScore(userid, week, date, scores);
     res.send(result);
   } else {
     res.status(400).send("Invalid userid or week or date");
@@ -31,24 +19,22 @@ router.post("/weekly-progress", (req: Request, res: Response) => {
 });
 
 router.post("/user-stars", (req: Request, res: Response) => {
-  const { userid, amount } = req.body;
-
-  if (typeof userid === "string") {
+  const { userid, amount } = req.body as { userid: string; amount: number };
+  try {
     const result = incrementStars(userid, amount);
     res.send(result);
-  } else {
-    res.status(400).send("Invalid userid or star amount");
+  } catch (error) {
+    res.status(400).send({ error: error, message: "Error updating stars" });
   }
 });
 
 router.post("/attempt-count", (req: Request, res: Response) => {
-  const { userid, week, newCount } = req.body;
-
-  if (typeof userid === "string") {
-    const result = updateAttemptCount(userid, week, newCount);
+  const { userid, week } = req.body as { userid: string; week: WeekString };
+  try {
+    const result = updateAttemptCount(userid, week);
     res.send(result);
-  } else {
-    res.status(400).send("Invalid userid or week or date");
+  } catch (error) {
+    res.status(400).send({ error: error, message: "Error updating attempt count" });
   }
 });
 

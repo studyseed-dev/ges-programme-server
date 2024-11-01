@@ -1,7 +1,7 @@
 import Database from "better-sqlite3";
 const db = new Database("ges.db");
 
-type WeekString =
+export type WeekString =
   | "week1"
   | "week2"
   | "week3"
@@ -85,7 +85,12 @@ export const updateUserScore = (userId: string, week: WeekString, date: string) 
 };
 
 // Combined of the above 2 functions
-export const updateUserProgressAndScore = (userId: string, week: WeekString, date: string) => {
+export const updateUserProgressAndScore = (
+  userId: string,
+  week: WeekString,
+  date: string,
+  scores: string
+) => {
   const progressQuery = `UPDATE progress SET ${week} = ? WHERE userid = ?`;
   const scoreQuery = `UPDATE scores SET ${week} = ? WHERE userid = ?`;
 
@@ -93,7 +98,7 @@ export const updateUserProgressAndScore = (userId: string, week: WeekString, dat
   const scoreStmt = db.prepare(scoreQuery);
 
   const progressResult = progressStmt.run(date, userId);
-  const scoreResult = scoreStmt.run(date, userId);
+  const scoreResult = scoreStmt.run(scores, userId);
 
   return {
     progressResult,
@@ -107,13 +112,13 @@ export const getUserStarsCount = (userId: string) => {
 };
 
 export const incrementStars = (userId: string, amountToIncre: number) => {
-  const currentStars = getUserStarsCount(userId) as number;
-  const newStarsCount = currentStars + amountToIncre;
-  const query = `UPDATE score SET stars = ? WHERE userid = ?`;
+  const currentStars = getUserStarsCount(userId) as { stars: number };
+  const newStarsCount = currentStars.stars + amountToIncre;
+  const query = `UPDATE scores SET stars = ? WHERE userid = ?`;
   return db.prepare(query).run(newStarsCount, userId);
 };
 
-export const updateAttemptCount = (userId: string, week: WeekString, newCount: string) => {
+export const updateAttemptCount = (userId: string, week: WeekString) => {
   const userAttempts = selectUserAttempts(userId);
   if (!userAttempts) {
     /** if empty rows, means user has not attempted any quiz */
@@ -122,9 +127,8 @@ export const updateAttemptCount = (userId: string, week: WeekString, newCount: s
   }
 
   let currentWeekCount = 0;
-  if (userAttempts) {
-    currentWeekCount = (userAttempts as Record<string, number>)[week];
-  }
+  if (userAttempts) currentWeekCount = (userAttempts as Record<string, number>)[week];
+
   const query = `UPDATE attempts SET ${week} = ? WHERE userid = ?`;
   return db.prepare(query).run(currentWeekCount + 1, userId);
 };

@@ -53,7 +53,7 @@ export interface QuizQuestions {
 
 export const GAME_DATA_NUM: QuizQuestions = {
   week1: {
-    activeDate: "2024-09-01", // First week already available
+    activeDate: "2024-10-31", // First week already available
     allQuestions: {
       el1: [
         {
