@@ -1,4 +1,0 @@
-concurrently
-cors
-better-sqlite3
-tsx

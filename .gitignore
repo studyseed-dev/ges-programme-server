@@ -33,9 +33,11 @@ build/
 Thumbs.db
 
 # SQLite database files
-# ges.db
-# ges.db-shm
-# ges.db-wal
+ges.db
+ges.db-shm
+ges.db-wal
 
 # Environment variables
 .env
+
+installation.txt
