@@ -30,18 +30,21 @@ export const checkUserExists = (userId: string) => {
 
 export const selectUser = (userId: string) => {
   const query = "SELECT * FROM users WHERE userid = ?";
-  return db.prepare(query).get(userId);
+  const userData = db.prepare(query).get(userId);
+  const queryCourse = "SELECT * FROM courses WHERE userid = ?";
+  const userCourse = db.prepare(queryCourse).get(userId);
+  return { userData, userCourse };
 };
 
-export const selectUserProgress = (userId: string) => {
-  const query = "SELECT * FROM progress WHERE userid = ?";
+export const selectUserProgress = (userId: string, course: string) => {
+  const query = "SELECT * FROM progress WHERE userid = ? AND course = ?";
 
-  const res = db.prepare(query).get(userId);
+  const res = db.prepare(query).get(userId, course);
   if (!res) {
-    const init = `INSERT INTO progress (userid) VALUES (?)`;
-    db.prepare(init).run(userId);
+    const init = `INSERT INTO progress (userid, course) VALUES (?,?)`;
+    db.prepare(init).run(userId, course);
   }
-  return db.prepare(query).get(userId);
+  return db.prepare(query).get(userId, course);
 };
 
 // check if user has logged in this week
@@ -50,26 +53,26 @@ export const checkWeeklyLogin = (userId: string, week: string) => {
   return db.prepare(query).get(userId, week);
 };
 
-export const selectUserScores = (userId: string) => {
-  const query = "SELECT * FROM scores WHERE userid = ?";
-  const res = db.prepare(query).get(userId);
+export const selectUserScores = (userId: string, course: string) => {
+  const query = "SELECT * FROM scores WHERE userid = ? AND course = ?";
+  const res = db.prepare(query).get(userId, course);
   if (!res) {
     /** if undefined means no rows exist for this user yet */
-    const init = `INSERT INTO scores (userid) VALUES (?)`;
-    db.prepare(init).run(userId);
+    const init = `INSERT INTO scores (userid, course) VALUES (?, ?)`;
+    db.prepare(init).run(userId, course);
   }
-  return db.prepare(query).get(userId);
+  return db.prepare(query).get(userId, course);
 };
 
-export const selectUserAttempts = (userId: string) => {
-  const query = "SELECT * FROM attempts WHERE userid = ?";
-  const res = db.prepare(query).get(userId);
+export const selectUserAttempts = (userId: string, course: string) => {
+  const query = "SELECT * FROM attempts WHERE userid = ? AND course = ?";
+  const res = db.prepare(query).get(userId, course);
   if (!res) {
     /** if undefined means no rows exist for this user yet */
-    const init = `INSERT INTO attempts (userid) VALUES (?)`;
-    db.prepare(init).run(userId);
+    const init = `INSERT INTO attempts (userid, course) VALUES (?, ?)`;
+    db.prepare(init).run(userId, course);
   }
-  return db.prepare(query).get(userId);
+  return db.prepare(query).get(userId, course);
 };
 
 // This should be called when user passed a tile/town
@@ -89,16 +92,17 @@ export const updateUserProgressAndScore = (
   userId: string,
   week: WeekString,
   date: string,
-  scores: string
+  scores: string,
+  course: string
 ) => {
-  const progressQuery = `UPDATE progress SET ${week} = ? WHERE userid = ?`;
-  const scoreQuery = `UPDATE scores SET ${week} = ? WHERE userid = ?`;
+  const progressQuery = `UPDATE progress SET ${week} = ? WHERE userid = ? AND course = ?`;
+  const scoreQuery = `UPDATE scores SET ${week} = ? WHERE userid = ? AND course = ?`;
 
   const progressStmt = db.prepare(progressQuery);
   const scoreStmt = db.prepare(scoreQuery);
 
-  const progressResult = progressStmt.run(date, userId);
-  const scoreResult = scoreStmt.run(scores, userId);
+  const progressResult = progressStmt.run(date, userId, course);
+  const scoreResult = scoreStmt.run(scores, userId, course);
 
   return {
     progressResult,
@@ -111,24 +115,24 @@ export const getUserStarsCount = (userId: string) => {
   return db.prepare(query).get(userId);
 };
 
-export const incrementStars = (userId: string, amountToIncre: number) => {
+export const incrementStars = (userId: string, amountToIncre: number, course: string) => {
   const currentStars = getUserStarsCount(userId) as { stars: number };
   const newStarsCount = currentStars.stars + amountToIncre;
-  const query = `UPDATE scores SET stars = ? WHERE userid = ?`;
-  return db.prepare(query).run(newStarsCount, userId);
+  const query = `UPDATE scores SET stars = ? WHERE userid = ? AND course = ?`;
+  return db.prepare(query).run(newStarsCount, userId, course);
 };
 
-export const updateAttemptCount = (userId: string, week: WeekString) => {
-  const userAttempts = selectUserAttempts(userId);
+export const updateAttemptCount = (userId: string, week: WeekString, course: string) => {
+  const userAttempts = selectUserAttempts(userId, course);
   if (!userAttempts) {
     /** if empty rows, means user has not attempted any quiz */
-    const query = `INSERT INTO attempts (userid, ${week}) VALUES (?, ?)`;
-    return db.prepare(query).run(userId, 1); /** new entry always starts with 1 */
+    const query = `INSERT INTO attempts (userid, ${week}, course) VALUES (?, ?, ?)`;
+    return db.prepare(query).run(userId, 1, course); /** new entry always starts with 1 */
   }
 
   let currentWeekCount = 0;
   if (userAttempts) currentWeekCount = (userAttempts as Record<string, number>)[week];
 
-  const query = `UPDATE attempts SET ${week} = ? WHERE userid = ?`;
-  return db.prepare(query).run(currentWeekCount + 1, userId);
+  const query = `UPDATE attempts SET ${week} = ? WHERE userid = ? AND course = ?`;
+  return db.prepare(query).run(currentWeekCount + 1, userId, course);
 };

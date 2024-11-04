@@ -8,10 +8,10 @@ import {
 const router = Router();
 
 router.post("/weekly-progress", (req: Request, res: Response) => {
-  const { userid, week, date, scores } = req.body;
+  const { userid, week, date, scores, course } = req.body;
 
   if (typeof userid === "string") {
-    const result = updateUserProgressAndScore(userid, week, date, scores);
+    const result = updateUserProgressAndScore(userid, week, date, scores, course);
     res.send(result);
   } else {
     res.status(400).send("Invalid userid or week or date");
@@ -19,9 +19,9 @@ router.post("/weekly-progress", (req: Request, res: Response) => {
 });
 
 router.post("/user-stars", (req: Request, res: Response) => {
-  const { userid, amount } = req.body as { userid: string; amount: number };
+  const { userid, amount, course } = req.body as { userid: string; amount: number; course: string };
   try {
-    const result = incrementStars(userid, amount);
+    const result = incrementStars(userid, amount, course);
     res.send(result);
   } catch (error) {
     res.status(400).send({ error: error, message: "Error updating stars" });
@@ -29,9 +29,9 @@ router.post("/user-stars", (req: Request, res: Response) => {
 });
 
 router.post("/attempt-count", (req: Request, res: Response) => {
-  const { userid, week } = req.body as { userid: string; week: WeekString };
+  const { userid, week, course } = req.body as { userid: string; week: WeekString; course: string };
   try {
-    const result = updateAttemptCount(userid, week);
+    const result = updateAttemptCount(userid, week, course);
     res.send(result);
   } catch (error) {
     res.status(400).send({ error: error, message: "Error updating attempt count" });

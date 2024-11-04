@@ -14,7 +14,8 @@ const db = new Database("ges.db");
 // const query = `
 //     DROP TABLE IF EXISTS progress;
 //     CREATE TABLE progress (
-//       userid STRING PRIMARY KEY,
+//       p_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//       userid STRING NOT NULL,
 //       week1 TEXT DEFAULT NULL,
 //       week2 TEXT DEFAULT NULL,
 //       week3 TEXT DEFAULT NULL,
@@ -27,33 +28,37 @@ const db = new Database("ges.db");
 //       week10 TEXT DEFAULT NULL,
 //       week11 TEXT DEFAULT NULL,
 //       week12 TEXT DEFAULT NULL,
+//       course TEXT NOT NULL,
 //       FOREIGN KEY (userid) REFERENCES users(userid)
 // )`;
 
-const query = `
-    DROP TABLE IF EXISTS scores;
-    CREATE TABLE scores (
-      userid STRING PRIMARY KEY,
-      week1 TEXT DEFAULT NULL,
-      week2 TEXT DEFAULT NULL,
-      week3 TEXT DEFAULT NULL,
-      week4 TEXT DEFAULT NULL,
-      week5 TEXT DEFAULT NULL,
-      week6 TEXT DEFAULT NULL,
-      week7 TEXT DEFAULT NULL,
-      week8 TEXT DEFAULT NULL,
-      week9 TEXT DEFAULT NULL,
-      week10 TEXT DEFAULT NULL,
-      week11 TEXT DEFAULT NULL,
-      week12 TEXT DEFAULT NULL,
-      stars INTEGER DEFAULT 0,
-      FOREIGN KEY (userid) REFERENCES users(userid)
-)`;
+// const query = `
+//     DROP TABLE IF EXISTS scores;
+//     CREATE TABLE scores (
+//       s_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//       userid STRING NOT NULL,
+//       week1 TEXT DEFAULT NULL,
+//       week2 TEXT DEFAULT NULL,
+//       week3 TEXT DEFAULT NULL,
+//       week4 TEXT DEFAULT NULL,
+//       week5 TEXT DEFAULT NULL,
+//       week6 TEXT DEFAULT NULL,
+//       week7 TEXT DEFAULT NULL,
+//       week8 TEXT DEFAULT NULL,
+//       week9 TEXT DEFAULT NULL,
+//       week10 TEXT DEFAULT NULL,
+//       week11 TEXT DEFAULT NULL,
+//       week12 TEXT DEFAULT NULL,
+//       stars INTEGER DEFAULT 0,
+//       course TEXT NOT NULL,
+//       FOREIGN KEY (userid) REFERENCES users(userid)
+// )`;
 
 // const query = `
 //     DROP TABLE IF EXISTS attempts;
 //     CREATE TABLE attempts (
-//       userid STRING PRIMARY KEY,
+//       a_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//       userid STRING NOT NULL,
 //       week1 INTEGER DEFAULT 0,
 //       week2 INTEGER DEFAULT 0,
 //       week3 INTEGER DEFAULT 0,
@@ -66,10 +71,20 @@ const query = `
 //       week10 INTEGER DEFAULT 0,
 //       week11 INTEGER DEFAULT 0,
 //       week12 INTEGER DEFAULT 0,
+//       course TEXT NOT NULL,
 //       FOREIGN KEY (userid) REFERENCES users(userid)
 // )`;
 
-db.exec(query);
+// const query = `
+//     DROP TABLE IF EXISTS courses;
+//     CREATE TABLE courses (
+//       userid STRING PRIMARY KEY,
+//       numeracy BOOLEAN DEFAULT FALSE,
+//       literacy BOOLEAN DEFAULT FALSE,
+//       FOREIGN KEY (userid) REFERENCES users(userid)
+// )`;
+
+// db.exec(query);
 
 // const insertProgress = db.prepare(
 //   "INSERT INTO progress (userid, first_name, last_name, role) VALUES (?, ?, ?, ?)"
@@ -103,6 +118,12 @@ type User = {
 //   // { userid: "JB01ZX", first_name: "Jena", last_name: "Beaumont", role: "STUDENT" },
 //   // { userid: "TI01DT", first_name: "Tomasz", last_name: "Ignasiewicz", role: "STUDENT" },
 //   // { userid: "HA01HF", first_name: "Hazar", last_name: "Alzaw", role: "STUDENT" },
+//   // { userid: "EC01YD", first_name: "Einas", last_name: "Chami", role: "STUDENT" },
+//   // { userid: "FU01YF", first_name: "Fiza", last_name: "Usama", role: "STUDENT" },
+//   // { userid: "LW01HB", first_name: "Leah", last_name: "Williamson", role: "STUDENT" },
+//   // { userid: "CM01DJ", first_name: "Cathy", last_name: "Mayhew", role: "STUDENT" },
+//   // { userid: "NU01BS", first_name: "Nese", last_name: "Uygut", role: "STUDENT" },
+//   // { userid: "HA01LL", first_name: "Heba", last_name: "Almoallem", role: "STUDENT" },
 // ];
 
 // const insertData = db.prepare(
@@ -113,5 +134,9 @@ type User = {
 //   const { userid, first_name, last_name, role } = user;
 //   insertData.run(userid, first_name, last_name, role);
 // }
+
+// const insertData = db
+//   .prepare("INSERT INTO courses (userid, numeracy, literacy) VALUES (?, ?, ?)")
+//   .run("CM01DJ", "TRUE", "FALSE");
 
 db.close(); /** convention to close */

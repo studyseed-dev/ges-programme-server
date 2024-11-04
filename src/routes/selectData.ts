@@ -22,10 +22,10 @@ router.get("/select-user", (req: Request, res: Response) => {
 });
 
 router.get("/user-progress", (req: Request, res: Response) => {
-  const { userid } = req.query;
+  const { userid, course } = req.query as { userid: string; course: string };
 
   if (typeof userid === "string") {
-    const result = selectUserProgress(userid);
+    const result = selectUserProgress(userid, course);
 
     res.send(result);
   } else {
@@ -34,10 +34,10 @@ router.get("/user-progress", (req: Request, res: Response) => {
 });
 
 router.get("/user-attempts", (req: Request, res: Response) => {
-  const { userid } = req.query;
+  const { userid, course } = req.query as { userid: string; course: string };
 
   if (typeof userid === "string") {
-    const result = selectUserAttempts(userid);
+    const result = selectUserAttempts(userid, course);
     res.send(result);
   } else {
     res.status(400).send("Invalid userid");
@@ -45,10 +45,10 @@ router.get("/user-attempts", (req: Request, res: Response) => {
 });
 
 router.get("/user-scores", (req: Request, res: Response) => {
-  const { userid } = req.query;
+  const { userid, course } = req.query as { userid: string; course: string };
 
   if (typeof userid === "string") {
-    const result = selectUserScores(userid);
+    const result = selectUserScores(userid, course);
     res.send(result);
   } else {
     res.status(400).send("Invalid userid");
