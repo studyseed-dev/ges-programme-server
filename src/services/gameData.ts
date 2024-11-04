@@ -744,6 +744,30 @@ export const GAME_DATA_LIT: QuizQuestions = {
     allQuestions: {
       el1: [
         {
+          question_number: "lit_el3_4",
+          question_text: "Match each action with its purpose.",
+          question_style: "matching",
+          correct_answer: {
+            "Setting measurable goals": "Keep progress clear",
+            "Reviewing feedback": "Identify areas for growth",
+            "Practicing regularly": "Build confidence",
+            "Celebrating successes": "Stay motivated",
+          },
+          options: [
+            "Setting measurable goals",
+            "Reviewing feedback",
+            "Practicing regularly",
+            "Celebrating successes",
+          ],
+          answers: [
+            "Keep progress clear",
+            "Identify areas for growth",
+            "Build confidence",
+            "Stay motivated",
+          ],
+          hint: "Think about how each action contributes to your growth.",
+        },
+        {
           question_number: "lit_el1_1",
           question_text: "Fill in the blank:",
           question_style: "fill_in_the_blank",
@@ -1059,7 +1083,7 @@ export const GAME_DATA_LIT: QuizQuestions = {
         },
         {
           question_number: "lit_el2_10",
-          question_text: "Contain the steps for reviewing progress.",
+          question_text: "Order the steps for reviewing progress.",
           question_style: "drag_and_drop",
           correct_answer: ["Review past work", "Note improvements", "Set a new goal"],
 
