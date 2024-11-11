@@ -1,5 +1,4 @@
 import Database from "better-sqlite3";
-import { run } from "node:test";
 const db = new Database("ges.db");
 
 export function runSQLQuery(query: string, params: any[] = []): any {

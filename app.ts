@@ -5,8 +5,6 @@ import loginRouter from "./src/routes/auth";
 import selectRouter from "./src/routes/selectData";
 import updateRouter from "./src/routes/updateData";
 import adminRouter from "./src/routes/admin";
-// import dotenv from "dotenv";
-// dotenv.config();
 // import morgan from "morgan";
 
 const app = express();

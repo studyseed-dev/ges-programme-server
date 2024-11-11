@@ -21,7 +21,7 @@ export const week2QuestionsEl1: Question[] = [
   },
   {
     question_number: "lit_el1_3",
-    question_text: "What punctuation goes at the end of a sentence?",
+    question_text: "What punctuation mark goes at the end of a statement?",
     question_style: "multiple_choice_question",
     correct_answer: "Full stop",
     possible_answers: ["Comma", "Full stop", "Exclamation mark", "Colon"],
@@ -29,8 +29,7 @@ export const week2QuestionsEl1: Question[] = [
   },
   {
     question_number: "lit_el1_4",
-    question_text:
-      "Arrange the following words into a sentence starting with a capital letter and ending with a full stop:",
+    question_text: "Arrange the following words into a sentence starting with a capital letter.",
     question_style: "drag_and_drop",
     correct_answer: ["Sarah", "likes", "running"],
     possible_answers: ["likes", "running", "Sarah"],
@@ -39,7 +38,7 @@ export const week2QuestionsEl1: Question[] = [
   },
   {
     question_number: "lit_el1_5",
-    question_text: "Match the sentence to the punctuation needed.",
+    question_text: "Match the punctuation mark at the end of the sentence to the correct name.",
     question_style: "matching",
     correct_answer: {
       "The sky is blue.": "Full stop",
@@ -56,7 +55,7 @@ export const week2QuestionsEl1: Question[] = [
     correct_answer: ["cat"],
     display_info: "The cat is black.",
     num_of_text_box: 1,
-    capitalisation: false,
+    capitalisation: true,
     hint: "A noun represents a person, place, or thing.",
   },
   {
@@ -83,18 +82,18 @@ export const week2QuestionsEl1: Question[] = [
     question_style: "matching",
     correct_answer: {
       I: "Personal Pronoun",
-      London: "Place name",
+      London: "Proper noun",
     },
     options: ["I", "London"],
-    answers: ["Personal Pronoun", "Place name"],
+    answers: ["Personal Pronoun", "Proper noun"],
     hint: "Names are always capitalised.",
   },
   {
     question_number: "lit_el1_10",
     question_text: "Rearrange into a sentence:",
     question_style: "drag_and_drop",
-    correct_answer: ["the baby", "sleeps", "at night"],
-    possible_answers: ["sleeps", "at night", "the baby"],
+    correct_answer: ["The baby", "sleeps", "at night."],
+    possible_answers: ["sleeps", "at night.", "The baby"],
     no_of_ans_box: 3,
     hint: "Start with a capital.",
   },
@@ -124,7 +123,7 @@ export const week2QuestionsEl1: Question[] = [
 export const week2QuestionsEl2: Question[] = [
   {
     question_number: "lit_el2_1",
-    question_text: "Which punctuation is used to show excitement?",
+    question_text: "Which punctuation mark is used to show excitement?",
     question_style: "multiple_choice_question",
     correct_answer: "Exclamation mark",
     possible_answers: ["Full stop", "Question mark", "Exclamation mark", "Comma"],
@@ -154,8 +153,7 @@ export const week2QuestionsEl2: Question[] = [
   },
   {
     question_number: "lit_el2_4",
-    question_text:
-      "Arrange the sentence correctly with capital letters: 'he / to the library / goes / every Tuesday'",
+    question_text: "Rearrange the sentence to correctly show the subject-verb and object.",
     question_style: "drag_and_drop",
     correct_answer: ["he", "goes", "to the library", "every Tuesday"],
     possible_answers: ["he", "to the library", "goes", "every Tuesday"],
@@ -182,7 +180,7 @@ export const week2QuestionsEl2: Question[] = [
   },
   {
     question_number: "lit_el2_7",
-    question_text: "Match the word to where it belongs in a sentence.",
+    question_text: "Match the noun with the correct term.",
     question_style: "matching",
     correct_answer: {
       Paris: "Proper noun",
@@ -194,7 +192,7 @@ export const week2QuestionsEl2: Question[] = [
   },
   {
     question_number: "lit_el2_8",
-    question_text: "Arrange into a question: 'you / did / the book / bring'",
+    question_text: "Arrange into a question:",
     question_style: "drag_and_drop",
     correct_answer: ["did", "you", "bring", "the book"],
     possible_answers: ["you", "did", "the book", "bring"],
@@ -236,12 +234,12 @@ export const week2QuestionsEl2: Question[] = [
   },
   {
     question_number: "lit_el2_12",
-    question_text: "Complete the sentence with the correct punctuation at the end:",
+    question_text: "Complete the sentence with the correct punctuation at the end.",
     question_style: "fill_in_the_blank",
-    correct_answer: ["!"],
-    display_info: "I am so excited for the holiday_",
+    correct_answer: ["I am so excited for the holiday!"],
+    display_info: "I am so excited for the holiday",
     num_of_text_box: 1,
-    capitalisation: false,
+    capitalisation: true,
     hint: "Use an exclamation mark for excitement.",
   },
   {
@@ -318,7 +316,7 @@ export const week2QuestionsEl3: Question[] = [
   },
   {
     question_number: "lit_el3_5",
-    question_text: "Arrange into a sentence with the correct punctuation:",
+    question_text: "Rearrange the sentence into the subject-verb and object pattern.",
     question_style: "drag_and_drop",
     correct_answer: ["Sarah", "likes to swim", "in the summer"],
     possible_answers: ["likes to swim", "Sarah", "in the summer"],
@@ -333,7 +331,7 @@ export const week2QuestionsEl3: Question[] = [
     correct_answer: ["In the morning, I like to read."],
     display_info: "In the morning I like to read.",
     num_of_text_box: 1,
-    capitalisation: false,
+    capitalisation: true,
     hint: "Commas separate time phrases.",
   },
   {
@@ -365,8 +363,8 @@ export const week2QuestionsEl3: Question[] = [
     question_number: "lit_el3_9",
     question_text: "Rearrange to form a question: 'to / cinema / you / do / want / the / go'",
     question_style: "drag_and_drop",
-    correct_answer: ["do", "you", "want", "go", "to", "the", "cinema"],
-    possible_answers: ["to", "cinema", "you", "do", "want", "the", "go"],
+    correct_answer: ["do", "you", "want", "to", "go", "to", "the", "cinema"],
+    possible_answers: ["to", "cinema", "to", "you", "do", "want", "the", "go"],
     no_of_ans_box: 7,
     hint: "Questions often begin with 'Do.'",
   },
@@ -374,10 +372,10 @@ export const week2QuestionsEl3: Question[] = [
     question_number: "lit_el3_10",
     question_text: "Add a comma in the sentence.",
     question_style: "fill_in_the_blank",
-    correct_answer: ["I bought apples, oranges, and bananas."],
+    correct_answer: ["I bought apples, oranges and bananas."],
     display_info: "I bought apples oranges and bananas.",
     num_of_text_box: 1,
-    capitalisation: false,
+    capitalisation: true,
     hint: "Use commas in lists.",
   },
   {

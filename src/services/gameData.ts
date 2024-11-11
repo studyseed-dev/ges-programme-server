@@ -635,8 +635,6 @@ export const GAME_DATA_NUM: QuizQuestions = {
       el1: week2QuestionsEl1,
       el2: week2QuestionsEl2,
       el3: week2QuestionsEl3,
-      l1: [],
-      l2: [],
     },
   },
   week3: {
@@ -645,8 +643,6 @@ export const GAME_DATA_NUM: QuizQuestions = {
       el1: [],
       el2: [],
       el3: [],
-      l1: [],
-      l2: [],
     },
   },
   week4: {
@@ -655,8 +651,6 @@ export const GAME_DATA_NUM: QuizQuestions = {
       el1: [],
       el2: [],
       el3: [],
-      l1: [],
-      l2: [],
     },
   },
   week5: {
@@ -665,8 +659,6 @@ export const GAME_DATA_NUM: QuizQuestions = {
       el1: [],
       el2: [],
       el3: [],
-      l1: [],
-      l2: [],
     },
   },
   week6: {
@@ -685,8 +677,6 @@ export const GAME_DATA_NUM: QuizQuestions = {
       el1: [],
       el2: [],
       el3: [],
-      l1: [],
-      l2: [],
     },
   },
   week8: {
@@ -695,8 +685,6 @@ export const GAME_DATA_NUM: QuizQuestions = {
       el1: [],
       el2: [],
       el3: [],
-      l1: [],
-      l2: [],
     },
   },
   week9: {
@@ -705,8 +693,6 @@ export const GAME_DATA_NUM: QuizQuestions = {
       el1: [],
       el2: [],
       el3: [],
-      l1: [],
-      l2: [],
     },
   },
   week10: {
@@ -725,8 +711,6 @@ export const GAME_DATA_NUM: QuizQuestions = {
       el1: [],
       el2: [],
       el3: [],
-      l1: [],
-      l2: [],
     },
   },
   week12: {
@@ -735,8 +719,6 @@ export const GAME_DATA_NUM: QuizQuestions = {
       el1: [],
       el2: [],
       el3: [],
-      l1: [],
-      l2: [],
     },
   },
 };
@@ -1371,8 +1353,6 @@ export const GAME_DATA_LIT: QuizQuestions = {
       el1: week2el1lit,
       el2: week2el2lit,
       el3: week2el3lit,
-      l1: [],
-      l2: [],
     },
   },
 };
