@@ -1,6 +1,9 @@
-import { time } from "node:console";
-import { on } from "node:events";
-import { only } from "node:test";
+import { week2QuestionsEl1, week2QuestionsEl2, week2QuestionsEl3 } from "../utils/num_questions";
+import {
+  week2QuestionsEl1 as week2el1lit,
+  week2QuestionsEl2 as week2el2lit,
+  week2QuestionsEl3 as week2el3lit,
+} from "../utils/lit_questions";
 
 interface BaseQuestion {
   question_number: string;
@@ -57,7 +60,7 @@ export interface QuizQuestions {
 
 export const GAME_DATA_NUM: QuizQuestions = {
   week1: {
-    activeDate: "2024-10-31", // First week already available
+    activeDate: "2024-10-31",
     allQuestions: {
       el1: [
         {
@@ -629,9 +632,9 @@ export const GAME_DATA_NUM: QuizQuestions = {
   week2: {
     activeDate: "2024-11-07",
     allQuestions: {
-      el1: [],
-      el2: [],
-      el3: [],
+      el1: week2QuestionsEl1,
+      el2: week2QuestionsEl2,
+      el3: week2QuestionsEl3,
       l1: [],
       l2: [],
     },
@@ -740,33 +743,9 @@ export const GAME_DATA_NUM: QuizQuestions = {
 
 export const GAME_DATA_LIT: QuizQuestions = {
   week1: {
-    activeDate: "2024-10-31", // First week already available
+    activeDate: "2024-10-31",
     allQuestions: {
       el1: [
-        {
-          question_number: "lit_el3_4",
-          question_text: "Match each action with its purpose.",
-          question_style: "matching",
-          correct_answer: {
-            "Setting measurable goals": "Keep progress clear",
-            "Reviewing feedback": "Identify areas for growth",
-            "Practicing regularly": "Build confidence",
-            "Celebrating successes": "Stay motivated",
-          },
-          options: [
-            "Setting measurable goals",
-            "Reviewing feedback",
-            "Practicing regularly",
-            "Celebrating successes",
-          ],
-          answers: [
-            "Keep progress clear",
-            "Identify areas for growth",
-            "Build confidence",
-            "Stay motivated",
-          ],
-          hint: "Think about how each action contributes to your growth.",
-        },
         {
           question_number: "lit_el1_1",
           question_text: "Fill in the blank:",
@@ -1384,6 +1363,16 @@ export const GAME_DATA_LIT: QuizQuestions = {
           hint: "Acknowledging progress keeps you moving forward.",
         },
       ],
+    },
+  },
+  week2: {
+    activeDate: "2024-11-07",
+    allQuestions: {
+      el1: week2el1lit,
+      el2: week2el2lit,
+      el3: week2el3lit,
+      l1: [],
+      l2: [],
     },
   },
 };

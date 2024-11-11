@@ -64,17 +64,6 @@ export const selectUserScores = (userId: string, course: string) => {
   return db.prepare(query).get(userId, course);
 };
 
-export const selectUserAttempts = (userId: string, course: string) => {
-  const query = "SELECT * FROM attempts WHERE userid = ? AND course = ?";
-  const res = db.prepare(query).get(userId, course);
-  if (!res) {
-    /** if undefined means no rows exist for this user yet */
-    const init = `INSERT INTO attempts (userid, course) VALUES (?, ?)`;
-    db.prepare(init).run(userId, course);
-  }
-  return db.prepare(query).get(userId, course);
-};
-
 // This should be called when user passed a tile/town
 export const updateUserProgress = (userId: string, week: WeekString, date: string) => {
   const query = `UPDATE progress SET ${week} = ? WHERE userid = ?`;
@@ -122,8 +111,13 @@ export const incrementStars = (userId: string, amountToIncre: number, course: st
   return db.prepare(query).run(newStarsCount, userId, course);
 };
 
+export const selectUserAttempts = (userId: string, course: string) => {
+  const query = "SELECT * FROM attempts WHERE userid = ? AND course = ?";
+  return db.prepare(query).get(userId, course);
+};
+
 export const updateAttemptCount = (userId: string, week: WeekString, course: string) => {
-  const userAttempts = selectUserAttempts(userId, course);
+  const userAttempts = selectUserAttempts(userId, course) as { [key: string]: number };
   if (!userAttempts) {
     /** if empty rows, means user has not attempted any quiz */
     const query = `INSERT INTO attempts (userid, ${week}, course) VALUES (?, ?, ?)`;
@@ -131,7 +125,7 @@ export const updateAttemptCount = (userId: string, week: WeekString, course: str
   }
 
   let currentWeekCount = 0;
-  if (userAttempts) currentWeekCount = (userAttempts as Record<string, number>)[week];
+  if (userAttempts) currentWeekCount = userAttempts[week];
 
   const query = `UPDATE attempts SET ${week} = ? WHERE userid = ? AND course = ?`;
   return db.prepare(query).run(currentWeekCount + 1, userId, course);
