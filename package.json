@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "concurrently \"tsx watch --clear-screen=false app.ts\" \"cd ../ges-programme-client && npm start\"",
-    "start": "node dist/app.js",
+    "start": "node dist/app.js || tsx app.ts",
     "build": "tsup app.ts --out-dir dist --format esm,cjs --dts --platform node"
   },
   "author": "",
@@ -14,6 +14,7 @@
     "concurrently": "^9.0.1",
     "cors": "^2.8.5",
     "express": "^4.21.1",
+    "mongoose": "^8.8.1",
     "typescript": "^5.6.3"
   },
   "devDependencies": {

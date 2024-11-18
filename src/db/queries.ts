@@ -31,18 +31,21 @@ export const checkUserExists = (userId: string) => {
 export const selectUser = (userId: string) => {
   const query = "SELECT * FROM users WHERE userid = ?";
   const userData = db.prepare(query).get(userId);
-  const queryCourse = "SELECT * FROM courses WHERE userid = ?";
+  const queryCourse = "SELECT literacy, numeracy FROM courses WHERE userid = ?";
   const userCourse = db.prepare(queryCourse).get(userId);
   return { userData, userCourse };
 };
 
-export const selectUserProgress = (userId: string, course: string) => {
-  const query = "SELECT * FROM progress WHERE userid = ? AND course = ?";
+export const selectUserProgress = (userId: string, course: string, week: string) => {
+  const query = `SELECT ${week} FROM progress WHERE userid = ? AND course = ?`;
 
   const res = db.prepare(query).get(userId, course);
   if (!res) {
     const init = `INSERT INTO progress (userid, course) VALUES (?,?)`;
     db.prepare(init).run(userId, course);
+    const updateWeek = `UPDATE progress SET ${week} = ? WHERE userid = ? AND course = ?`;
+    const initWeek = JSON.stringify([null, null, null]);
+    db.prepare(updateWeek).run(initWeek, userId, course);
   }
   return db.prepare(query).get(userId, course);
 };
