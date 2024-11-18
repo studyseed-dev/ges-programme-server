@@ -13,6 +13,47 @@ const getQuestions = async (model: any, week: string, res: Response, errorMessag
   }
 };
 
+type GameData = {
+  [key: string]:
+    | {
+        [key: string]: string;
+      }
+    | string;
+};
+
+const getActiveDates = async () => {
+  try {
+    const result = await LiteracyQuestions.findOne(
+      {},
+      {
+        "week1.activeDate": 1,
+        "week2.activeDate": 1,
+        "week3.activeDate": 1,
+        "week4.activeDate": 1,
+        "week5.activeDate": 1,
+        "week6.activeDate": 1,
+        "week7.activeDate": 1,
+        "week8.activeDate": 1,
+        "week9.activeDate": 1,
+        "week10.activeDate": 1,
+        "week11.activeDate": 1,
+        "week12.activeDate": 1,
+      }
+    ).lean();
+    delete (result as unknown as GameData)["_id"];
+
+    return result;
+  } catch (err) {
+    console.error("Error fetching active dates:", err);
+  }
+};
+
+router.get("/week-dates", async (req: Request, res: Response) => {
+  const activeDates = await getActiveDates();
+  console.log(activeDates);
+  res.status(200).json(activeDates);
+});
+
 router.get("/lit-questions", (req: Request, res: Response) => {
   const { week } = req.query;
   getQuestions(LiteracyQuestions, week as string, res, "Error fetching Literacy questions:");
