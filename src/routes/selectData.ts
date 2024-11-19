@@ -22,14 +22,13 @@ router.get("/select-user", (req: Request, res: Response) => {
 });
 
 router.get("/user-progress", (req: Request, res: Response) => {
-  const { userid, course } = req.query as { userid: string; course: string };
+  const { userid, course, week } = req.query as { userid: string; course: string; week: string };
 
-  if (typeof userid === "string") {
-    const result = selectUserProgress(userid, course);
-
+  try {
+    const result = selectUserProgress(userid, course, week);
     res.send(result);
-  } else {
-    res.status(400).send("Invalid userid");
+  } catch (error) {
+    res.status(400).send({ error, message: "Error fetching from progress table" });
   }
 });
 
@@ -62,11 +61,16 @@ router.get("/game-data", (req: Request, res: Response) => {
 });
 
 router.get("/weekly-questions", (req: Request, res: Response) => {
-  const { week } = req.query;
+  const { week, topic } = req.query as { week: string; topic: string };
+  try {
+    const GAME_QUESTION = topic === "Numeracy" ? GAME_DATA_NUM : GAME_DATA_LIT;
+    const weeklyQuestions = GAME_QUESTION[week].allQuestions;
+    res.send(weeklyQuestions);
+  } catch (error) {
+    console.error(error);
+  }
 
   if (typeof week === "string") {
-    const weeklyQuestions = GAME_DATA_NUM[week].allQuestions;
-    res.send(weeklyQuestions);
   } else throw new Error("Invalid week");
 });
 
