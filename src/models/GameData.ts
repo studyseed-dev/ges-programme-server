@@ -8,6 +8,7 @@ export const weekSchema = {
   },
 };
 
+// used outside when questions are fetched from the database
 export type QuestionSchema = {
   [key: string]: typeof weekSchema;
 };

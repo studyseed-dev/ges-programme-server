@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
-
+import { TOTAL_NUM_OF_QUESTIONS } from "../utils/constants";
+// This model is for GES programme
 // Define interface for User Document
 interface IUser extends Document {
   userid: string;
@@ -17,7 +18,7 @@ const initializeData = <T>(
   courses: string[],
   initialValue: T
 ): Record<string, Record<string, T>> => {
-  const weeks = Array.from({ length: 12 }, (_, i) => `week${i + 1}`);
+  const weeks = Array.from({ length: TOTAL_NUM_OF_QUESTIONS }, (_, i) => `week${i + 1}`);
   const initialData: Record<string, Record<string, T>> = {};
 
   courses.forEach((course) => {
@@ -31,11 +32,11 @@ const initializeData = <T>(
 };
 
 const initializeProgress = (courses: string[]): Record<string, Record<string, (Date | null)[]>> => {
-  return initializeData(courses, [null, null, null]);
+  return initializeData(courses, [null]);
 };
 
 const initializeScores = (courses: string[]): Record<string, Record<string, number[]>> => {
-  return initializeData(courses, [0, 0, 0]);
+  return initializeData(courses, [0]);
 };
 
 const initializeAttempts = (courses: string[]): Record<string, Record<string, number>> => {
