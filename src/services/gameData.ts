@@ -1,9 +1,4 @@
 import { week2QuestionsEl1, week2QuestionsEl2, week2QuestionsEl3 } from "../utils/num_questions";
-import {
-  week2QuestionsEl1 as week2el1lit,
-  week2QuestionsEl2 as week2el2lit,
-  week2QuestionsEl3 as week2el3lit,
-} from "../utils/lit_questions";
 
 interface BaseQuestion {
   question_number: string;

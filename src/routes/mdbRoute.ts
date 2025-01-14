@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { LiteracyQuestions, NumeracyQuestions, QuestionSchema } from "../models/GameData";
 import User from "../models/User";
+import { BaselineLiteracyQuestions, BaselineNumeracyQuestions } from "../models/BaselineGameData";
 export const router = Router();
 
 const getQuestions = async (model: any, week: string, res: Response, errorMessage: string) => {
@@ -23,7 +24,7 @@ type GameData = {
 
 const getActiveDates = async () => {
   try {
-    const result = await LiteracyQuestions.findOne(
+    const litDates = await LiteracyQuestions.findOne(
       {},
       {
         "week1.activeDate": 1,
@@ -40,9 +41,28 @@ const getActiveDates = async () => {
         "week12.activeDate": 1,
       }
     ).lean();
-    delete (result as unknown as GameData)["_id"];
+    delete (litDates as unknown as GameData)["_id"];
 
-    return result;
+    const numDates = await NumeracyQuestions.findOne(
+      {},
+      {
+        "week1.activeDate": 1,
+        "week2.activeDate": 1,
+        "week3.activeDate": 1,
+        "week4.activeDate": 1,
+        "week5.activeDate": 1,
+        "week6.activeDate": 1,
+        "week7.activeDate": 1,
+        "week8.activeDate": 1,
+        "week9.activeDate": 1,
+        "week10.activeDate": 1,
+        "week11.activeDate": 1,
+        "week12.activeDate": 1,
+      }
+    ).lean();
+    delete (numDates as unknown as GameData)["_id"];
+
+    return { litDates, numDates };
   } catch (err) {
     console.error("Error fetching active dates:", err);
   }
@@ -50,7 +70,6 @@ const getActiveDates = async () => {
 
 router.get("/week-dates", async (req: Request, res: Response) => {
   const activeDates = await getActiveDates();
-  console.log(activeDates);
   res.status(200).json(activeDates);
 });
 
@@ -74,7 +93,7 @@ router.get("/users", async (req: Request, res: Response) => {
   }
 });
 
-// find all users by age
+// find all users by
 router.get("/find", async (req: Request, res: Response) => {
   const { userid } = req.query;
   try {
@@ -134,7 +153,6 @@ router.put("/incre-attempts", async (req: Request, res: Response) => {
       return;
     }
     const currentAttempts = user.attempts[course][week];
-    console.log("currentAttempts", currentAttempts);
     const update = {
       $set: {
         [`attempts.${course}.${week}`]: currentAttempts + 1,
@@ -166,6 +184,21 @@ router.get("/weekly-questions", async (req: Request, res: Response) => {
 
   if (typeof week === "string") {
   } else throw new Error("Invalid week");
+});
+
+router.get("/baseline-questions", async (req: Request, res: Response) => {
+  const { topic } = req.query as { topic: string };
+  try {
+    const GAME_QUESTION =
+      topic.toUpperCase() === "NUMERACY"
+        ? await BaselineNumeracyQuestions.findOne().lean()
+        : await BaselineLiteracyQuestions.findOne().lean();
+    delete (GAME_QUESTION as any)["_id"];
+    const baselineQuestions = GAME_QUESTION;
+    res.send(baselineQuestions);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 router.get("/user-progress", async (req: Request, res: Response) => {
