@@ -3,6 +3,7 @@ import { LiteracyQuestions, NumeracyQuestions, QuestionSchema } from "../models/
 import User from "../models/User";
 import { BaselineLiteracyQuestions, BaselineNumeracyQuestions } from "../models/BaselineGameData";
 import { GES2LiteracyQuestions, GES2NumeracyQuestions } from "../models/GES2GameData";
+
 export const router = Router();
 
 const getQuestions = async (model: any, week: string, res: Response, errorMessage: string) => {
@@ -297,6 +298,21 @@ router.get("/weekly-questions", async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: `Error fetching ${topic} questions` });
+  }
+});
+
+router.get("/baseline-questions", async (req: Request, res: Response) => {
+  const { topic } = req.query as { topic: string };
+  try {
+    const GAME_QUESTION =
+      topic.toUpperCase() === "NUMERACY"
+        ? await BaselineNumeracyQuestions.findOne().lean()
+        : await BaselineLiteracyQuestions.findOne().lean();
+    delete (GAME_QUESTION as any)["_id"];
+    const baselineQuestions = GAME_QUESTION;
+    res.send(baselineQuestions);
+  } catch (error) {
+    console.error(error);
   }
 });
 
