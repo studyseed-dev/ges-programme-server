@@ -7,6 +7,7 @@ import updateRouter from "./src/routes/updateData";
 import adminRouter from "./src/routes/admin";
 import MDBRouter from "./src/routes/mdbRoute";
 import MDBAuthRouter from "./src/auth/loginMDB";
+import courseRouter from "./src/routes/postMDB";
 import mongoose from "mongoose";
 // import morgan from "morgan";
 
@@ -26,6 +27,7 @@ app.use("/update", updateRouter);
 app.use("/admin", adminRouter);
 app.use("/mdb", MDBRouter);
 app.use("/authdb", MDBAuthRouter);
+app.use("/course", courseRouter);
 
 // Start server
 app.listen(port, () => {
