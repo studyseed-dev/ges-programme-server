@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
+
 const db = new Database("ges.db");
 dotenv.config();
 const router = Router();

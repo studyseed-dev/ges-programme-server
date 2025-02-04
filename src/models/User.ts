@@ -11,6 +11,7 @@ interface IUser extends Document {
   progress: Record<string, Record<string, (Date | null)[]>>;
   attempts: Record<string, Record<string, number>>;
   scores: Record<string, Record<string, number[]>>;
+  enrolled_courses: string[];
 }
 
 // Helper function to generate initial data structure
@@ -66,6 +67,7 @@ const userSchema = new Schema<IUser>({
     type: Object,
     default: {},
   },
+  enrolled_courses: { type: [String], required: false },
 });
 
 // Pre-save hook to initialize the `progress` field

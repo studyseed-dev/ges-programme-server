@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import { LiteracyQuestions, NumeracyQuestions, QuestionSchema } from "../models/GameData";
 import User from "../models/User";
 import { BaselineLiteracyQuestions, BaselineNumeracyQuestions } from "../models/BaselineGameData";
+import { GES2LiteracyQuestions, GES2NumeracyQuestions } from "../models/GES2GameData";
+
 export const router = Router();
 
 const getQuestions = async (model: any, week: string, res: Response, errorMessage: string) => {
@@ -19,57 +21,153 @@ type GameData = {
     | {
         [key: string]: string;
       }
-    | string;
+    | string
+    | {};
 };
 
-const getActiveDates = async () => {
+type CourseEnrolled = "GES" | "GES2";
+
+const getActiveDates = async (courseEnrolled: CourseEnrolled) => {
   try {
-    const litDates = await LiteracyQuestions.findOne(
-      {},
-      {
-        "week1.activeDate": 1,
-        "week2.activeDate": 1,
-        "week3.activeDate": 1,
-        "week4.activeDate": 1,
-        "week5.activeDate": 1,
-        "week6.activeDate": 1,
-        "week7.activeDate": 1,
-        "week8.activeDate": 1,
-        "week9.activeDate": 1,
-        "week10.activeDate": 1,
-        "week11.activeDate": 1,
-        "week12.activeDate": 1,
-      }
-    ).lean();
-    delete (litDates as unknown as GameData)["_id"];
+    let dateObj = {
+      litDates: {},
+      numDates: {},
+    };
+    switch (courseEnrolled) {
+      case "GES":
+        const lit = await LiteracyQuestions.findOne(
+          {},
+          {
+            "week1.activeDate": 1,
+            "week2.activeDate": 1,
+            "week3.activeDate": 1,
+            "week4.activeDate": 1,
+            "week5.activeDate": 1,
+            "week6.activeDate": 1,
+            "week7.activeDate": 1,
+            "week8.activeDate": 1,
+            "week9.activeDate": 1,
+            "week10.activeDate": 1,
+            "week11.activeDate": 1,
+            "week12.activeDate": 1,
+          }
+        ).lean();
+        delete (lit as unknown as GameData)["_id"];
 
-    const numDates = await NumeracyQuestions.findOne(
-      {},
-      {
-        "week1.activeDate": 1,
-        "week2.activeDate": 1,
-        "week3.activeDate": 1,
-        "week4.activeDate": 1,
-        "week5.activeDate": 1,
-        "week6.activeDate": 1,
-        "week7.activeDate": 1,
-        "week8.activeDate": 1,
-        "week9.activeDate": 1,
-        "week10.activeDate": 1,
-        "week11.activeDate": 1,
-        "week12.activeDate": 1,
-      }
-    ).lean();
-    delete (numDates as unknown as GameData)["_id"];
+        const num = await NumeracyQuestions.findOne(
+          {},
+          {
+            "week1.activeDate": 1,
+            "week2.activeDate": 1,
+            "week3.activeDate": 1,
+            "week4.activeDate": 1,
+            "week5.activeDate": 1,
+            "week6.activeDate": 1,
+            "week7.activeDate": 1,
+            "week8.activeDate": 1,
+            "week9.activeDate": 1,
+            "week10.activeDate": 1,
+            "week11.activeDate": 1,
+            "week12.activeDate": 1,
+          }
+        ).lean();
+        delete (num as unknown as GameData)["_id"];
 
-    return { litDates, numDates };
+        if (lit && num) {
+          dateObj.litDates = lit as GameData;
+          dateObj.numDates = num as GameData;
+        }
+        return dateObj;
+
+      case "GES2":
+        const lit2 = await GES2LiteracyQuestions.findOne(
+          {},
+          {
+            "week1.activeDate": 1,
+            "week2.activeDate": 1,
+            "week3.activeDate": 1,
+            "week4.activeDate": 1,
+            "week5.activeDate": 1,
+            "week6.activeDate": 1,
+            "week7.activeDate": 1,
+            "week8.activeDate": 1,
+            "week9.activeDate": 1,
+            "week10.activeDate": 1,
+          }
+        ).lean();
+        lit2 && delete (lit2 as unknown as GameData)["_id"];
+
+        const num2 = await GES2NumeracyQuestions.findOne(
+          {},
+          {
+            "week1.activeDate": 1,
+            "week2.activeDate": 1,
+            "week3.activeDate": 1,
+            "week4.activeDate": 1,
+            "week5.activeDate": 1,
+            "week6.activeDate": 1,
+            "week7.activeDate": 1,
+            "week8.activeDate": 1,
+            "week9.activeDate": 1,
+            "week10.activeDate": 1,
+          }
+        ).lean();
+
+        num2 && delete (num2 as unknown as GameData)["_id"];
+
+        dateObj.litDates = (lit2 as GameData) || {};
+        dateObj.numDates = (num2 as GameData) || {};
+
+        return dateObj;
+
+      default:
+        throw new Error("Invalid course enrolled");
+    }
+    // const litDates = await LiteracyQuestions.findOne(
+    //   {},
+    //   {
+    //     "week1.activeDate": 1,
+    //     "week2.activeDate": 1,
+    //     "week3.activeDate": 1,
+    //     "week4.activeDate": 1,
+    //     "week5.activeDate": 1,
+    //     "week6.activeDate": 1,
+    //     "week7.activeDate": 1,
+    //     "week8.activeDate": 1,
+    //     "week9.activeDate": 1,
+    //     "week10.activeDate": 1,
+    //     "week11.activeDate": 1,
+    //     "week12.activeDate": 1,
+    //   }
+    // ).lean();
+    // delete (litDates as unknown as GameData)["_id"];
+
+    // const numDates = await NumeracyQuestions.findOne(
+    //   {},
+    //   {
+    //     "week1.activeDate": 1,
+    //     "week2.activeDate": 1,
+    //     "week3.activeDate": 1,
+    //     "week4.activeDate": 1,
+    //     "week5.activeDate": 1,
+    //     "week6.activeDate": 1,
+    //     "week7.activeDate": 1,
+    //     "week8.activeDate": 1,
+    //     "week9.activeDate": 1,
+    //     "week10.activeDate": 1,
+    //     "week11.activeDate": 1,
+    //     "week12.activeDate": 1,
+    //   }
+    // ).lean();
+    // delete (numDates as unknown as GameData)["_id"];
   } catch (err) {
     console.error("Error fetching active dates:", err);
   }
 };
 
 router.get("/week-dates", async (req: Request, res: Response) => {
-  const activeDates = await getActiveDates();
+  const { courseEnrolled } = req.query;
+  const activeDates = await getActiveDates(courseEnrolled as CourseEnrolled);
   res.status(200).json(activeDates);
 });
 
@@ -169,21 +267,53 @@ router.put("/incre-attempts", async (req: Request, res: Response) => {
 });
 
 router.get("/weekly-questions", async (req: Request, res: Response) => {
-  const { week, topic } = req.query as { week: string; topic: string };
+  const { week, topic, courseEnrolled } = req.query as {
+    week: string;
+    topic: string;
+    courseEnrolled: CourseEnrolled;
+  };
+
   try {
-    const GAME_QUESTION =
-      topic.toUpperCase() === "NUMERACY"
-        ? ((await NumeracyQuestions.findOne()) as QuestionSchema)
-        : ((await LiteracyQuestions.findOne()) as QuestionSchema);
-    const weeklyQuestions = GAME_QUESTION[week].allQuestions;
+    let weeklyQuestions = {};
+
+    if (courseEnrolled === "GES") {
+      const GAME_QUESTION =
+        topic.toUpperCase() === "NUMERACY"
+          ? ((await NumeracyQuestions.findOne()) as QuestionSchema)
+          : ((await LiteracyQuestions.findOne()) as QuestionSchema);
+      if (!GAME_QUESTION)
+        res.status(404).send({ error: `${topic} questions for this is not available.` });
+      weeklyQuestions = GAME_QUESTION[week].allQuestions;
+    } else if (courseEnrolled === "GES2") {
+      const GAME_QUESTION =
+        topic.toUpperCase() === "NUMERACY"
+          ? ((await GES2NumeracyQuestions.findOne()) as QuestionSchema)
+          : ((await GES2LiteracyQuestions.findOne()) as QuestionSchema);
+      if (!GAME_QUESTION) throw new Error("Error fetching Numeracy questions:");
+
+      weeklyQuestions = GAME_QUESTION[week].allQuestions;
+    }
 
     res.send(weeklyQuestions);
   } catch (error) {
     console.error(error);
+    res.status(500).send({ message: `Error fetching ${topic} questions` });
   }
+});
 
-  if (typeof week === "string") {
-  } else throw new Error("Invalid week");
+router.get("/baseline-questions", async (req: Request, res: Response) => {
+  const { topic } = req.query as { topic: string };
+  try {
+    const GAME_QUESTION =
+      topic.toUpperCase() === "NUMERACY"
+        ? await BaselineNumeracyQuestions.findOne().lean()
+        : await BaselineLiteracyQuestions.findOne().lean();
+    delete (GAME_QUESTION as any)["_id"];
+    const baselineQuestions = GAME_QUESTION;
+    res.send(baselineQuestions);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 router.get("/baseline-questions", async (req: Request, res: Response) => {
