@@ -237,6 +237,47 @@ router.get("/weekly-questions", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/module-map", async (req: Request, res: Response) => {
+  const { week, topic, courseEnrolled } = req.query as {
+    week: string;
+    topic: string;
+    courseEnrolled: CourseEnrolled;
+  };
+
+  try {
+    let weeklyQuestions = {};
+
+    if (courseEnrolled === "GES") {
+      const GAME_QUESTIONS =
+        topic.toUpperCase() === "NUMERACY"
+          ? await NumeracyQuestions.findOne().lean()
+          : await LiteracyQuestions.findOne().lean();
+      if (!GAME_QUESTIONS) {
+        res.status(404).send({ error: `${topic} questions for this is not available.` });
+      } else {
+        weeklyQuestions = (GAME_QUESTIONS as unknown as QuestionSchema)[week].allQuestions;
+      }
+    } else if (courseEnrolled === "GES2") {
+      const GAME_QUESTIONS =
+        topic.toUpperCase() === "NUMERACY"
+          ? await GES2NumeracyQuestions.findOne().lean()
+          : await GES2LiteracyQuestions.findOne().lean();
+      if (!GAME_QUESTIONS) throw new Error("Error fetching Numeracy questions:");
+
+      weeklyQuestions = (GAME_QUESTIONS as unknown as QuestionSchema).allQuestions;
+    }
+
+    const map = {
+      [week]: Object.keys(weeklyQuestions)[0],
+    };
+
+    res.send(map);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: `Error fetching ${topic} questions` });
+  }
+});
+
 router.get("/baseline-questions", async (req: Request, res: Response) => {
   const { topic } = req.query as { topic: string };
   try {
