@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import User, { Courses, initializeProgress } from "../models/User";
+import { User, initializeProgress } from "../models";
 export const router = Router();
 
 // Create a new user

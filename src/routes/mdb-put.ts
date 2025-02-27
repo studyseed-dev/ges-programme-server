@@ -1,11 +1,5 @@
 import { Router, Request, Response } from "express";
-import User, {
-  IUser,
-  Courses,
-  ModuleTopic,
-  SubjectScores,
-  initializeProgress,
-} from "../models/User";
+import { User, IUser, Courses, ModuleTopic, SubjectScores, initializeProgress } from "../models";
 export const router = Router();
 
 // update user progress, for all attempts
