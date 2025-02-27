@@ -1,8 +1,14 @@
 import { Router, Request, Response } from "express";
-import { LiteracyQuestions, NumeracyQuestions, QuestionSchema } from "../models/GameData";
-import User from "../models/User";
-import { BaselineLiteracyQuestions, BaselineNumeracyQuestions } from "../models/BaselineGameData";
-import { GES2LiteracyQuestions, GES2NumeracyQuestions } from "../models/GES2GameData";
+import {
+  GES2LiteracyQuestions,
+  GES2NumeracyQuestions,
+  BaselineLiteracyQuestions,
+  BaselineNumeracyQuestions,
+  LiteracyQuestions,
+  NumeracyQuestions,
+  QuestionSchema,
+  User,
+} from "../models";
 
 export const router = Router();
 
@@ -123,43 +129,6 @@ const getActiveDates = async (courseEnrolled: CourseEnrolled) => {
       default:
         throw new Error("Invalid course enrolled");
     }
-    // const litDates = await LiteracyQuestions.findOne(
-    //   {},
-    //   {
-    //     "week1.activeDate": 1,
-    //     "week2.activeDate": 1,
-    //     "week3.activeDate": 1,
-    //     "week4.activeDate": 1,
-    //     "week5.activeDate": 1,
-    //     "week6.activeDate": 1,
-    //     "week7.activeDate": 1,
-    //     "week8.activeDate": 1,
-    //     "week9.activeDate": 1,
-    //     "week10.activeDate": 1,
-    //     "week11.activeDate": 1,
-    //     "week12.activeDate": 1,
-    //   }
-    // ).lean();
-    // delete (litDates as unknown as GameData)["_id"];
-
-    // const numDates = await NumeracyQuestions.findOne(
-    //   {},
-    //   {
-    //     "week1.activeDate": 1,
-    //     "week2.activeDate": 1,
-    //     "week3.activeDate": 1,
-    //     "week4.activeDate": 1,
-    //     "week5.activeDate": 1,
-    //     "week6.activeDate": 1,
-    //     "week7.activeDate": 1,
-    //     "week8.activeDate": 1,
-    //     "week9.activeDate": 1,
-    //     "week10.activeDate": 1,
-    //     "week11.activeDate": 1,
-    //     "week12.activeDate": 1,
-    //   }
-    // ).lean();
-    // delete (numDates as unknown as GameData)["_id"];
   } catch (err) {
     console.error("Error fetching active dates:", err);
   }
@@ -202,70 +171,6 @@ router.get("/find", async (req: Request, res: Response) => {
   }
 });
 
-// Create a new user
-router.post("/new-user", async (req: Request, res: Response) => {
-  try {
-    const users = new User(req.body);
-    await users.save();
-    res.status(201).json(users);
-  } catch (error) {
-    res.status(400).json({ error });
-  }
-});
-
-// update user progress if pass in one go
-router.put("/update-progress", async (req: Request, res: Response) => {
-  const { userid, week, course, scoreArr } = req.body;
-  try {
-    const user = await User.findOne({ userid });
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return;
-    }
-
-    const updatedProgress = user.progress[course][week].map(() => new Date());
-
-    // instead of pushing the new score, we replace the score at the given week
-    const update = {
-      $set: {
-        [`progress.${course}.${week}`]: updatedProgress,
-        [`scores.${course}.${week}`]: scoreArr,
-      },
-    };
-
-    const updatedUser = await User.findOneAndUpdate({ userid }, update, { new: true });
-
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    console.error("Error updating progress:", error);
-    res.status(500).json({ error });
-  }
-});
-
-router.put("/incre-attempts", async (req: Request, res: Response) => {
-  const { userid, week, course } = req.body;
-  try {
-    const user = await User.findOne({ userid });
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return;
-    }
-    const currentAttempts = user.attempts[course][week];
-    const update = {
-      $set: {
-        [`attempts.${course}.${week}`]: currentAttempts + 1,
-      },
-    };
-
-    const updatedUser = await User.findOneAndUpdate({ userid }, update, { new: true });
-
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    console.error("Error updating attempts:", error);
-    res.status(500).json({ error });
-  }
-});
-
 router.get("/weekly-questions", async (req: Request, res: Response) => {
   const { week, topic, courseEnrolled } = req.query as {
     week: string;
@@ -277,21 +182,21 @@ router.get("/weekly-questions", async (req: Request, res: Response) => {
     let weeklyQuestions = {};
 
     if (courseEnrolled === "GES") {
-      const GAME_QUESTION =
+      const GAME_QUESTIONS =
         topic.toUpperCase() === "NUMERACY"
           ? ((await NumeracyQuestions.findOne()) as QuestionSchema)
           : ((await LiteracyQuestions.findOne()) as QuestionSchema);
-      if (!GAME_QUESTION)
+      if (!GAME_QUESTIONS)
         res.status(404).send({ error: `${topic} questions for this is not available.` });
-      weeklyQuestions = GAME_QUESTION[week].allQuestions;
+      weeklyQuestions = GAME_QUESTIONS[week].allQuestions;
     } else if (courseEnrolled === "GES2") {
-      const GAME_QUESTION =
+      const GAME_QUESTIONS =
         topic.toUpperCase() === "NUMERACY"
           ? ((await GES2NumeracyQuestions.findOne()) as QuestionSchema)
           : ((await GES2LiteracyQuestions.findOne()) as QuestionSchema);
-      if (!GAME_QUESTION) throw new Error("Error fetching Numeracy questions:");
+      if (!GAME_QUESTIONS) throw new Error("Error fetching Numeracy questions:");
 
-      weeklyQuestions = GAME_QUESTION[week].allQuestions;
+      weeklyQuestions = GAME_QUESTIONS[week].allQuestions;
     }
 
     res.send(weeklyQuestions);
@@ -301,47 +206,111 @@ router.get("/weekly-questions", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/baseline-questions", async (req: Request, res: Response) => {
-  const { topic } = req.query as { topic: string };
-  try {
-    const GAME_QUESTION =
-      topic.toUpperCase() === "NUMERACY"
-        ? await BaselineNumeracyQuestions.findOne().lean()
-        : await BaselineLiteracyQuestions.findOne().lean();
-    delete (GAME_QUESTION as any)["_id"];
-    const baselineQuestions = GAME_QUESTION;
-    res.send(baselineQuestions);
-  } catch (error) {
-    console.error(error);
-  }
-});
+router.get("/module-map", async (req: Request, res: Response) => {
+  const { week, topic, courseEnrolled } = req.query as {
+    week: string;
+    topic: string;
+    courseEnrolled: CourseEnrolled;
+  };
 
-router.get("/baseline-questions", async (req: Request, res: Response) => {
-  const { topic } = req.query as { topic: string };
   try {
-    const GAME_QUESTION =
-      topic.toUpperCase() === "NUMERACY"
-        ? await BaselineNumeracyQuestions.findOne().lean()
-        : await BaselineLiteracyQuestions.findOne().lean();
-    delete (GAME_QUESTION as any)["_id"];
-    const baselineQuestions = GAME_QUESTION;
-    res.send(baselineQuestions);
-  } catch (error) {
-    console.error(error);
-  }
-});
+    let weeklyQuestions = {};
 
-router.get("/user-progress", async (req: Request, res: Response) => {
-  const { userid, week, topic } = req.query as { userid: string; week: string; topic: string };
-  try {
-    const user = await User.findOne({ userid });
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-      return;
+    if (courseEnrolled === "GES") {
+      const GAME_QUESTIONS =
+        topic.toUpperCase() === "NUMERACY"
+          ? await NumeracyQuestions.findOne().lean()
+          : await LiteracyQuestions.findOne().lean();
+      if (!GAME_QUESTIONS) {
+        res.status(404).send({ error: `${topic} questions for this is not available.` });
+      } else {
+        weeklyQuestions = (GAME_QUESTIONS as unknown as QuestionSchema)[week].allQuestions;
+      }
+    } else if (courseEnrolled === "GES2") {
+      const GAME_QUESTIONS =
+        topic.toUpperCase() === "NUMERACY"
+          ? await GES2NumeracyQuestions.findOne().lean()
+          : await GES2LiteracyQuestions.findOne().lean();
+      if (!GAME_QUESTIONS) throw new Error("Error fetching Numeracy questions:");
+
+      weeklyQuestions = (GAME_QUESTIONS as unknown as QuestionSchema).allQuestions;
     }
-    res.status(200).json(user.progress[topic][week]);
+
+    const map = {
+      [week]: Object.keys(weeklyQuestions)[0],
+    };
+
+    res.send(map);
   } catch (error) {
     console.error(error);
+    res.status(500).send({ message: `Error fetching ${topic} questions` });
+  }
+});
+
+router.get("/baseline-questions", async (req: Request, res: Response) => {
+  const { topic } = req.query as { topic: string };
+  try {
+    const GAME_QUESTIONS =
+      topic.toUpperCase() === "NUMERACY"
+        ? await BaselineNumeracyQuestions.findOne().lean()
+        : await BaselineLiteracyQuestions.findOne().lean();
+    delete (GAME_QUESTIONS as any)["_id"];
+    const baselineQuestions = GAME_QUESTIONS;
+    res.send(baselineQuestions);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.get("/week-module-map", async (req: Request, res: Response) => {
+  const { topic, courseEnrolled } = req.query as {
+    week: string;
+    topic: string;
+    courseEnrolled: CourseEnrolled;
+  };
+
+  try {
+    let weeklyQuestions = {};
+
+    if (courseEnrolled === "GES") {
+      const GAME_QUESTIONS =
+        topic.toUpperCase() === "NUMERACY"
+          ? await NumeracyQuestions.findOne().lean()
+          : await LiteracyQuestions.findOne().lean();
+      if (!GAME_QUESTIONS) {
+        res.status(404).send({ error: `${topic} questions for this is not available.` });
+      } else {
+        weeklyQuestions = GAME_QUESTIONS as unknown as QuestionSchema;
+      }
+    } else if (courseEnrolled === "GES2") {
+      const GAME_QUESTIONS =
+        topic.toUpperCase() === "NUMERACY"
+          ? await GES2NumeracyQuestions.findOne().lean()
+          : await GES2LiteracyQuestions.findOne().lean();
+      if (!GAME_QUESTIONS) throw new Error("Error fetching Numeracy questions:");
+
+      weeklyQuestions = GAME_QUESTIONS as unknown as QuestionSchema;
+    }
+
+    const extractor = (obj: QuestionSchema) => {
+      const res = {} as { [key: string]: string };
+
+      for (const key in obj) {
+        if (obj[key].allQuestions) {
+          const questionKey = Object.keys(obj[key].allQuestions);
+          if (questionKey.length > 0) {
+            res[key] = questionKey[0];
+          }
+        }
+      }
+
+      return res;
+    };
+
+    res.send(extractor(weeklyQuestions));
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: `Error fetching ${topic} map` });
   }
 });
 

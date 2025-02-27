@@ -1,15 +1,13 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import loginRouter from "./src/routes/auth";
-import selectRouter from "./src/routes/selectData";
-import updateRouter from "./src/routes/updateData";
-import adminRouter from "./src/routes/admin";
-import MDBRouter from "./src/routes/mdbRoute";
+import getRouter from "./src/routes/mdb-get";
+import postRouter from "./src/routes/mdb-post";
+import putRouter from "./src/routes/mdb-put";
 import MDBAuthRouter from "./src/auth/loginMDB";
-import courseRouter from "./src/routes/postMDB";
 import mongoose from "mongoose";
-// import morgan from "morgan";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const port = 3001;
@@ -20,14 +18,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-// app.use(morgan("dev"));
-app.use("/auth", loginRouter);
-app.use("/get", selectRouter);
-app.use("/update", updateRouter);
-app.use("/admin", adminRouter);
-app.use("/mdb", MDBRouter);
+app.use("/mdb-read", getRouter);
+app.use("/mdb-create", postRouter);
+app.use("/mdb-update", putRouter);
 app.use("/authdb", MDBAuthRouter);
-app.use("/course", courseRouter);
 
 // Start server
 app.listen(port, () => {

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "concurrently \"tsx watch --clear-screen=false app.ts\" \"cd ../ges-programme-client && npm start\"",
-    "start": "node dist/app.js || tsx app.ts",
+    "start": "tsx watch app.ts",
     "build": "tsup app.ts --out-dir dist --format esm,cjs --dts --platform node"
   },
   "author": "",
