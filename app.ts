@@ -7,6 +7,7 @@ import putRouter from "./src/routes/mdb-put";
 import MDBAuthRouter from "./src/auth/loginMDB";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import swaggerDocs from "./src/swagger/swagger";
 dotenv.config();
 
 const app = express();
@@ -26,6 +27,7 @@ app.use("/authdb", MDBAuthRouter);
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  swaggerDocs(app, port);
 });
 
 // Connect to MongoDB
