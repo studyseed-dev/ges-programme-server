@@ -233,7 +233,7 @@ router.get("/module-map", async (req: Request, res: Response) => {
           : await GES2LiteracyQuestions.findOne().lean();
       if (!GAME_QUESTIONS) throw new Error("Error fetching Numeracy questions:");
 
-      weeklyQuestions = (GAME_QUESTIONS as unknown as QuestionSchema).allQuestions;
+      weeklyQuestions = (GAME_QUESTIONS as unknown as QuestionSchema)[week].allQuestions;
     }
 
     const map = {
