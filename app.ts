@@ -7,14 +7,19 @@ import putRouter from "./src/routes/mdb-put";
 import MDBAuthRouter from "./src/auth/loginMDB";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import swaggerDocs from "./src/swagger/swagger";
+import YAML from "js-yaml";
+import swaggerUi, { JsonObject } from "swagger-ui-express";
+import fs from "fs";
+
 dotenv.config();
 
 const app = express();
 const port = 3001;
+const swaggerDocument = YAML.load(fs.readFileSync("./src/openapi/ges.yaml", "utf8"));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument as JsonObject));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,7 +32,6 @@ app.use("/authdb", MDBAuthRouter);
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-  swaggerDocs(app, port);
 });
 
 // Connect to MongoDB

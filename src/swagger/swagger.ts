@@ -3,11 +3,11 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { version } from "../../package.json";
 
-const options: swaggerJsdoc.Options = {
+export const options: swaggerJsdoc.Options = {
   definition: {
-    openapi: "3.0.0",
+    openapi: "3.1.0",
     info: {
-      title: "REST API Docs",
+      title: "Studyseed GES REST API Docs",
       version,
     },
     components: {

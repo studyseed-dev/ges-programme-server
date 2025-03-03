@@ -1,0 +1,312 @@
+openapi: 3.1.0
+info:
+  title: Studyseed GES API Documentation
+  version: 1.0.0
+  description: Endpoints specification
+
+components:
+  schemas:
+    User:
+      properties:
+        _id:
+          type: string
+          description: MongoDB document ID.
+        userid:
+          type: string
+          description: Unique user identifier.
+        first_name:
+          type: string
+          description: User's first name.
+        last_name:
+          type: string
+          description: User's last name.
+        courses:
+          type: array
+          items:
+            type: string
+          description: List of courses the user is associated with.
+        avatar:
+          type: string
+          description: URL to the user's avatar image.
+        enrolled_courses:
+          type: array
+          items:
+            type: string
+          description: List of courses the user is enrolled in.
+        progress:
+          $ref: "#/components/schemas/Progress"
+          description: User's progress in enrolled courses.
+
+    Progress:
+      type: object
+      description: Mapping of courses to topics with progress data.
+      properties:
+        GES2:
+          type: object
+          properties:
+            LITERACY:
+              type: object
+              properties:
+                ModuleName:
+                  type: array
+                  items:
+                    type: array
+                    prefixItems:
+                      - type: integer
+                        description: User's score
+                      - type: string
+                        description: Date of completion
+
+            NUMERACY:
+              type: object
+              properties:
+                ModuleName:
+                  type: array
+                  items:
+                    type: array
+                    prefixItems:
+                      - type: integer
+                        description: User's score
+                      - type: string
+                        description: Date of completion
+        GES:
+          type: object
+          properties:
+            LITERACY:
+              type: object
+              properties:
+                L1:
+                  type: array
+                  items:
+                    type: array
+                    prefixItems:
+                      - type: integer
+                        description: User's score
+                      - type: string
+                        description: Date of completion
+
+            NUMERACY:
+              type: object
+              properties:
+                L1:
+                  type: array
+                  items:
+                    type: array
+                    prefixItems:
+                      - type: integer
+                        description: User's score
+                      - type: string
+                        description: Date of completion
+paths:
+  /mdb-read/users:
+    get:
+      tags:
+        - Users
+      summary: Retrieve all existing users
+      responses:
+        "200":
+          description: User retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request. The userid parameter is missing or invalid.
+        "500":
+          description: Internal server error.
+
+  /mdb-read/find:
+    get:
+      tags:
+        - Users
+      summary: Retrieve an existing user by their userid
+      parameters:
+        - in: query
+          name: userid
+          schema:
+            type: string
+          required: true
+          description: The ID of the user to retrieve.
+      responses:
+        "200":
+          description: User retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request. The userid parameter is missing or invalid.
+        "500":
+          description: Internal server error.
+
+  /mdb-read/weekly-questions:
+    get:
+      tags:
+        - Questions
+      summary: Retrieve questions for a specific week
+      parameters:
+        - in: query
+          name: week
+          schema:
+            type: string
+          required: true
+          description: The week of the question to retrieve.
+        - in: query
+          name: topic
+          schema:
+            type: string
+          required: true
+          description: The topic of the question to retrieve.
+        - in: query
+          name: courseEnrolled
+          schema:
+            type: string
+          required: true
+          description: The course for this question.
+      responses:
+        "200":
+          description: Question retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                maxProperties: 1
+                properties:
+                  L1_1:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        question_number:
+                          type: string
+                        question_text:
+                          type: string
+                        question_style:
+                          type: string
+        "400":
+          description: Bad request. The week parameter is invalid.
+        "500":
+          description: Internal server error.
+
+  /mdb-read/module-map:
+    get:
+      tags:
+        - Week to Module Mapping
+      summary: Retrieve a mapping for a specific week to its module name.
+      parameters:
+        - in: query
+          name: week
+          schema:
+            type: string
+          required: true
+          description: The week of the question to retrieve.
+        - in: query
+          name: topic
+          schema:
+            type: string
+          required: true
+          description: The topic of the question to retrieve.
+        - in: query
+          name: courseEnrolled
+          schema:
+            type: string
+          required: true
+          description: The course for this question.
+      responses:
+        "200":
+          description: Question retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                maxProperties: 1
+                properties:
+                  week1:
+                    type: string
+        "400":
+          description: Bad request. Either invalid topic or course enrolled.
+        "404":
+          description: Questions not found.
+        "500":
+          description: Internal server error.
+
+  /mdb-read/week-module-map:
+    get:
+      tags:
+        - Week to Module Mapping
+      summary: Retrieve a mapping for an entire week to their respective module names for a specific course.
+      parameters:
+        - in: query
+          name: topic
+          schema:
+            type: string
+          required: true
+          description: The topic of the question to retrieve.
+        - in: query
+          name: courseEnrolled
+          schema:
+            type: string
+          required: true
+          description: The course for this question.
+      responses:
+        "200":
+          description: Question retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  week1:
+                    type: string
+                additionalProperties:
+                  type: string
+        "400":
+          description: Bad request. Either invalid topic or course enrolled.
+        "404":
+          description: Questions not found.
+        "500":
+          description: Internal server error.
+
+  /mdb-create/new-user:
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userid:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                courses:
+                  type: array
+                  items:
+                    type: string
+                enrolled_courses:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - userid
+                - first_name
+                - last_name
+                - courses
+                - enrolled_courses
+      responses:
+        "201":
+          description: New user created successfully
+        "400":
+          description: Malformed syntax or invalid data
+        "409":
+          description: User validation failed
