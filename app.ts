@@ -30,9 +30,7 @@ app.use("/mdb-update", putRouter);
 app.use("/authdb", MDBAuthRouter);
 
 // Start server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+app.listen(port, () => console.log(`Server is running on port ${port}`));
 
 // Connect to MongoDB
 mongoose
