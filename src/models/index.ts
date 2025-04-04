@@ -5,7 +5,7 @@ export {
   BaselineQuestionSchema,
 } from "./BaselineGameData";
 
-export { NumeracyQuestions, LiteracyQuestions } from "./GameData";
+export { NumeracyQuestions, LiteracyQuestions } from "./GESGameData";
 
 export { GES2LiteracyQuestions, GES2NumeracyQuestions, QuestionSchema } from "./GES2GameData";
 

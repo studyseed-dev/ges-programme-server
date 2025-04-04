@@ -7,6 +7,7 @@ import {
   GES2LiteracyQuestions,
 } from "../models";
 import { CourseEnrolled, GameData } from "./types";
+import { AdminQuestions } from "../models/AdminQuestions";
 
 export const getQuestions = async (
   model: any,
@@ -169,4 +170,10 @@ export const getActiveDates = async (courseEnrolled: CourseEnrolled) => {
   } catch (err) {
     console.error("Error fetching active dates:", err);
   }
+};
+
+export const fetchAdminQuestions = async (): Promise<
+  QuestionSchema | { [error: string]: string }
+> => {
+  return (await AdminQuestions.findOne().select("-_id").lean()) as unknown as QuestionSchema;
 };

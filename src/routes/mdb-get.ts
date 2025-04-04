@@ -6,6 +6,7 @@ import {
   User,
 } from "../models";
 import { CourseEnrolled, extractor, fetchQuestions, getActiveDates, validateWeek } from "../utils";
+import { fetchAdminQuestions } from "../utils/helperFunctions";
 
 export const router = Router();
 
@@ -125,6 +126,19 @@ router.get("/week-module-map", async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: `Internal error occured when fetching ${topic} map` });
+  }
+});
+
+router.get("/admin-questions", async (req: Request, res: Response) => {
+  try {
+    let GAME_QUESTIONS = (await fetchAdminQuestions()) as QuestionSchema;
+    if (!GAME_QUESTIONS) {
+      res.status(404).json({ message: `Question not found!` });
+    }
+    res.send(GAME_QUESTIONS);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: `Internal error occured when fetching admin questions` });
   }
 });
 
