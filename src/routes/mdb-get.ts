@@ -29,7 +29,7 @@ router.get("/find", async (req: Request, res: Response) => {
   const { userid } = req.query;
   try {
     const users = await User.find({ userid }, { _id: 0 }).lean();
-    res.json(users);
+    res.json(users[0]);
   } catch (error) {
     res.status(500).json({ error });
   }
