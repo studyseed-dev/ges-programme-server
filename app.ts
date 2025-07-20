@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import cors from "cors";
 import getRouter from "./src/routes/mdb-get";
@@ -23,7 +24,14 @@ app.use(express.urlencoded({ extended: false }));
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
 app.use("/mdb-read", getRouter);
 app.use("/mdb-create", postRouter);
 app.use("/mdb-update", putRouter);

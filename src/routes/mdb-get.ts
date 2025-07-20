@@ -1,4 +1,7 @@
 import { Router, Request, Response } from "express";
+import cookieParser from "cookie-parser";
+import jwt, { JwtPayload } from "jsonwebtoken";
+
 import {
   BaselineLiteracyQuestions,
   BaselineNumeracyQuestions,
@@ -9,6 +12,7 @@ import { CourseEnrolled, extractor, fetchQuestions, getActiveDates, validateWeek
 import { fetchAdminQuestions } from "../utils/helperFunctions";
 
 export const router = Router();
+router.use(cookieParser());
 
 router.get("/week-dates", async (req: Request, res: Response) => {
   const { courseEnrolled } = req.query;
@@ -26,12 +30,29 @@ router.get("/users", async (req: Request, res: Response) => {
 });
 
 router.get("/find", async (req: Request, res: Response) => {
-  const { userid } = req.query;
   try {
-    const users = await User.find({ userid }, { _id: 0 }).lean();
-    res.json(users[0]);
+    const token = req.cookies?.authToken;
+    const secret = process.env.JWT_SECRET as string;
+
+    if (!token) {
+      res.status(401).json({ message: "Unauthorized: Missing token in cookies!" });
+      return;
+    }
+    const { userid } = jwt.verify(token, secret) as JwtPayload & {
+      userid: string;
+    };
+    const { userid: queryUserid } = req.query;
+
+    if (userid !== queryUserid) {
+      res.status(403).json({ message: "Forbidden: User ID mismatch" });
+    }
+    const user = await User.find({ userid }, { _id: 0 }).lean();
+    if (!user) {
+      res.status(404).json({ message: "User not found!" });
+    }
+    res.json(user[0]);
   } catch (error) {
-    res.status(500).json({ error });
+    res.status(401).json({ message: error });
   }
 });
 
@@ -47,12 +68,10 @@ router.get("/weekly-questions", async (req: Request, res: Response) => {
 
     if (GAME_QUESTIONS.error) {
       res.status(400).json({ message: GAME_QUESTIONS.error });
-      return;
     }
 
     if (!GAME_QUESTIONS || !validateWeek(GAME_QUESTIONS, week)) {
       res.status(404).json({ message: `${week} does not exist in this question set.` });
-      return;
     }
 
     res.send(GAME_QUESTIONS[week].allQuestions);
@@ -74,7 +93,6 @@ router.get("/module-map", async (req: Request, res: Response) => {
 
     if (GAME_QUESTIONS.error) {
       res.status(400).json({ message: GAME_QUESTIONS.error });
-      return;
     }
 
     if (!GAME_QUESTIONS || !Object.hasOwn(GAME_QUESTIONS, week)) {
@@ -112,10 +130,8 @@ router.get("/week-module-map", async (req: Request, res: Response) => {
 
   try {
     let GAME_QUESTIONS = (await fetchQuestions(courseEnrolled, topic)) as QuestionSchema;
-
     if (GAME_QUESTIONS.error) {
       res.status(400).json({ message: GAME_QUESTIONS.error });
-      return;
     }
 
     if (!GAME_QUESTIONS) {
