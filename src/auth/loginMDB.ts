@@ -7,6 +7,8 @@ import { User } from "../models";
 
 dotenv.config();
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const router = Router();
 
 const loginSchema = z.object({
@@ -45,9 +47,10 @@ router.post("/login", async (req: Request, res: Response) => {
     res
       .cookie("authToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: isProduction,
         maxAge: 1 * 24 * 60 * 60 * 1000,
-        domain: process.env.NODE_ENV === "production" ? "ges-client.netlify.app" : undefined,
+        sameSite: isProduction ? "none" : "lax",
+        domain: isProduction ? "ges-client.netlify.app" : undefined,
         path: "/",
       })
       .json({ message: "Login successful!", operation: true });

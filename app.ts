@@ -15,6 +15,7 @@ import fs from "fs";
 dotenv.config();
 
 const app = express();
+
 const port = 3001;
 const swaggerDocument = YAML.load(fs.readFileSync("./src/openapi/ges.yaml", "utf8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument as JsonObject));
@@ -25,11 +26,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+const allowedOrigins =
+  process.env.NODE_ENV === "production" ? process.env.CLIENT_URL : "http://localhost:3000";
+
+console.log(process.env.NODE_ENV, allowedOrigins);
+
 app.use(
   cors({
-    origin: true,
+    origin: allowedOrigins,
     credentials: true,
-    optionsSuccessStatus: 200,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
 app.use("/mdb-read", getRouter);
