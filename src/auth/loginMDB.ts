@@ -47,6 +47,7 @@ router.post("/login", async (req: Request, res: Response) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 1 * 24 * 60 * 60 * 1000,
+        domain: process.env.NODE_ENV === "production" ? "ges-client.netlify.app" : undefined,
         path: "/",
       })
       .json({ message: "Login successful!", operation: true });
