@@ -50,7 +50,6 @@ router.post("/login", async (req: Request, res: Response) => {
         secure: isProduction,
         maxAge: 1 * 24 * 60 * 60 * 1000,
         sameSite: isProduction ? "none" : "lax",
-        domain: isProduction ? "ges-client.netlify.app" : undefined,
         path: "/",
       })
       .json({ message: "Login successful!", operation: true });
