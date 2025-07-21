@@ -1,8 +1,11 @@
 import { z } from "zod";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import { Router, Request, Response } from "express";
 
 import { User } from "../models";
+
+dotenv.config();
 
 const router = Router();
 
@@ -21,6 +24,7 @@ router.post("/login", async (req: Request, res: Response) => {
       message: parseResult.error.issues[0]?.message || "Invalid input",
       operation: false,
     });
+    return;
   }
   const parsedUserid = parseResult.data;
 
@@ -28,9 +32,11 @@ router.post("/login", async (req: Request, res: Response) => {
     const userLogin = await User.findOne({ userid: parsedUserid?.userid });
     if (!userLogin) {
       res.status(401).json({ message: "User does not exist!", operation: false });
+      return;
     }
     if (!userLogin?.enrolled_courses || userLogin.enrolled_courses.length <= 0) {
       res.status(404).json({ message: "User not registered!", operation: false });
+      return;
     }
 
     // Generate JWT token
@@ -43,7 +49,7 @@ router.post("/login", async (req: Request, res: Response) => {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         path: "/",
       })
-      .json({ message: "Login successful!", operation: true, headers: res.getHeaders() });
+      .json({ message: "Login successful!", operation: true });
   } catch (error) {
     res.status(500).json({ message: `Login error - ${error}`, operation: false });
   }
