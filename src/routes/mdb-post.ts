@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { User, initializeProgress } from "../models";
-import { coursesArray } from "../models/User";
+
 export const router = Router();
 interface MongoError extends Error {
   code: number;
@@ -22,6 +22,7 @@ router.post("/new-user", async (req: Request, res: Response) => {
       res.status(409).json({
         message: `${(error as MongoError).keyValue?.userid} already exist!`,
       });
+      return;
     }
     res.status(400).json({ message: `${(error as MongoError).message}` });
   }
