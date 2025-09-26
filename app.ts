@@ -28,7 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const allowedOrigins =
-  process.env.NODE_ENV === "production" ? process.env.CLIENT_URL : "http://localhost:3000";
+  process.env.NODE_ENV === "production"
+    ? ([process.env.CLIENT_URL, process.env.BASELINE_URL] as string[])
+    : ["http://localhost:3000"];
 
 app.use(
   cors({
