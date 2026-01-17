@@ -8,17 +8,15 @@ import {
   QuestionSchema,
   User,
 } from "../models";
-import { CourseEnrolled, extractor, fetchQuestions, getActiveDates, validateWeek } from "../utils";
+import { extractor } from "../utils";
 import { fetchAdminQuestions } from "../utils/helperFunctions";
+import { getQuestions } from "../utils/getQuestions";
+import { Course } from "../types/Course";
+import { Topic } from "../types/Topic";
+import { getActiveModuleIds } from "../utils/getActiveModulesByCourse";
 
 export const router = Router();
 router.use(cookieParser());
-
-router.get("/week-dates", async (req: Request, res: Response) => {
-  const { courseEnrolled } = req.query;
-  const activeDates = await getActiveDates(courseEnrolled as CourseEnrolled);
-  res.status(200).json(activeDates);
-});
 
 router.get("/users", async (req: Request, res: Response) => {
   try {
@@ -60,58 +58,20 @@ router.get("/find", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/weekly-questions", async (req: Request, res: Response) => {
-  const { week, topic, courseEnrolled } = req.query as {
+router.get("/questions", async (req: Request, res: Response) => {
+  const { topic, courseEnrolled } = req.query as {
     week: string;
-    topic: string;
-    courseEnrolled: CourseEnrolled;
+    topic: Topic;
+    courseEnrolled: Course;
   };
 
   try {
-    let GAME_QUESTIONS = (await fetchQuestions(courseEnrolled, topic)) as QuestionSchema;
+    let GAME_QUESTIONS = await getQuestions(courseEnrolled, topic);
 
-    if (GAME_QUESTIONS.error) {
-      res.status(400).json({ message: GAME_QUESTIONS.error });
-      return;
-    }
-
-    if (!GAME_QUESTIONS || !validateWeek(GAME_QUESTIONS, week)) {
-      res.status(404).json({ message: `${week} does not exist in this question set.` });
-      return;
-    }
-
-    res.send(GAME_QUESTIONS[week].allQuestions);
+    res.send(GAME_QUESTIONS);
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: `Error fetching ${topic} questions` });
-  }
-});
-
-router.get("/module-map", async (req: Request, res: Response) => {
-  const { week, topic, courseEnrolled } = req.query as {
-    week: string;
-    topic: string;
-    courseEnrolled: CourseEnrolled;
-  };
-
-  try {
-    let GAME_QUESTIONS = (await fetchQuestions(courseEnrolled, topic)) as QuestionSchema;
-
-    if (GAME_QUESTIONS.error) {
-      res.status(400).json({ message: GAME_QUESTIONS.error });
-      return;
-    }
-
-    if (!GAME_QUESTIONS || !Object.hasOwn(GAME_QUESTIONS, week)) {
-      res.status(404).json({ message: `Invalid week: ${week}` });
-      return;
-    } else {
-      res.send({ [week]: Object.keys(GAME_QUESTIONS[week].allQuestions)[0] });
-      return;
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: `Error fetching ${topic} map` });
   }
 });
 
@@ -130,31 +90,6 @@ router.get("/baseline-questions", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/week-module-map", async (req: Request, res: Response) => {
-  const { topic, courseEnrolled } = req.query as {
-    week: string;
-    topic: string;
-    courseEnrolled: CourseEnrolled;
-  };
-
-  try {
-    let GAME_QUESTIONS = (await fetchQuestions(courseEnrolled, topic)) as QuestionSchema;
-    if (GAME_QUESTIONS.error) {
-      res.status(400).json({ message: GAME_QUESTIONS.error });
-      return;
-    }
-
-    if (!GAME_QUESTIONS) {
-      res.status(404).json({ message: `Question not found!` });
-    } else {
-      res.send(extractor(GAME_QUESTIONS));
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: `Internal error occured when fetching ${topic} map` });
-  }
-});
-
 router.get("/admin-questions", async (req: Request, res: Response) => {
   try {
     let GAME_QUESTIONS = (await fetchAdminQuestions()) as QuestionSchema;
@@ -166,6 +101,26 @@ router.get("/admin-questions", async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: `Internal error occured when fetching admin questions` });
+  }
+});
+
+router.get("/active-moduleIds", async (req: Request, res: Response) => {
+  const { topic, course } = req.query as {
+    week: string;
+    topic: Topic;
+    course: Course;
+  };
+
+  try {
+    let activeModules = await getActiveModuleIds(course, topic);
+    if (!activeModules) {
+      res.status(404).json({ message: `Module IDs not found!` });
+      return;
+    }
+    res.send(activeModules);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: `Internal error occured when fetching active modules IDs` });
   }
 });
 

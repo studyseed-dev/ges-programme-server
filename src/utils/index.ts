@@ -1,9 +1,3 @@
-export {
-  getQuestions,
-  fetchQuestions,
-  validateWeek,
-  extractor,
-  getActiveDates,
-} from "./helperFunctions";
+export { extractor } from "./helperFunctions";
 
-export { GameData, CourseEnrolled } from "./types";
+export { GameData } from "./types";

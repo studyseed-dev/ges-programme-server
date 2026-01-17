@@ -6,5 +6,3 @@ export type GameData = {
     | string
     | {};
 };
-
-export type CourseEnrolled = "GES" | "GES2";
