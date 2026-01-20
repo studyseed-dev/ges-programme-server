@@ -1,39 +1,30 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
-// This model is for GES programme
-// Define interface for User Document
-export const courses = ["GES", "GES2", "GLP"] as const;
-export const topics = ["LITERACY", "NUMERACY"] as const;
+import { Course } from "../types/Course";
+import { Topic } from "../types/Topic";
+
 export interface IUser extends Document {
   userid: string;
   first_name: string;
   last_name: string;
-  courses: string[];
+  courses: Topic[];
   avatar: string;
-  enrolled_courses: Courses[];
+  enrolled_courses: Course[];
   progress: Partial<ProgressModel>;
 }
 
-export interface SubjectScores {
-  // course module name (EL1, L12...) is key and value is an array of tuples
-  // tuple's first element is the score and second element is the date
-  [key: string]: [number, string][];
-}
-export type Topics = (typeof topics)[number];
-export type ModuleTopic = {
-  [key in Topics]: SubjectScores;
-};
+// course module name (EL1, L12...) is key and value is an array of tuples
+// tuple's first element is the score and second element is the date
+export type SubjectScores = Record<string, [number, string][]>;
 
-export type Courses = (typeof courses)[number];
+export type ModuleTopic = Record<Topic, SubjectScores>;
 
-export type ProgressModel = {
-  [K in Courses]: ModuleTopic;
-};
+export type ProgressModel = Record<Course, ModuleTopic>;
 
 // Helper function to generate initial data structure
-export const initializeProgress = (courses: Courses[]): Partial<ProgressModel> => {
+export const initializeProgress = (courses: Course[]): Partial<ProgressModel> => {
   const initialData = {} as Partial<ProgressModel>; // use type assertion here to tell TS that the empty object will eventually have the shape of ProgressModel
 
-  courses.forEach((course: Courses) => {
+  courses.forEach((course) => {
     initialData[course] = {
       LITERACY: {},
       NUMERACY: {},
@@ -49,13 +40,13 @@ const userSchema = new Schema<IUser>(
     userid: { type: String, required: true, unique: true },
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },
-    courses: { type: [String], required: true, enum: topics },
+    courses: { type: [String], required: true, enum: Topic },
     avatar: {
       type: String,
       required: false,
       default: "https://ik.imagekit.io/jbyap95/sam_colon.png",
     },
-    enrolled_courses: { type: [String], required: false, enum: courses },
+    enrolled_courses: { type: [String], required: false, enum: Course },
     progress: {
       type: Schema.Types.Mixed,
       required: false,

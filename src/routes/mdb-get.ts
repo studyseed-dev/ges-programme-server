@@ -2,15 +2,10 @@ import { Router, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import {
-  BaselineLiteracyQuestions,
-  BaselineNumeracyQuestions,
-  QuestionSchema,
-  User,
-} from "../models";
-import { extractor } from "../utils";
+import { BaselineLiteracyQuestions, BaselineNumeracyQuestions, User } from "../models";
+
 import { fetchAdminQuestions } from "../utils/helperFunctions";
-import { getQuestions } from "../utils/getQuestions";
+import { getQuestions, getQuestionsByModuleId } from "../utils/getQuestions";
 import { Course } from "../types/Course";
 import { Topic } from "../types/Topic";
 import { getActiveModuleIds } from "../utils/getActiveModulesByCourse";
@@ -58,20 +53,41 @@ router.get("/find", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/questions", async (req: Request, res: Response) => {
-  const { topic, courseEnrolled } = req.query as {
-    week: string;
+router.get("/all-questions", async (req: Request, res: Response) => {
+  const { topic, course } = req.query as {
     topic: Topic;
-    courseEnrolled: Course;
+    course: Course;
   };
 
   try {
-    let GAME_QUESTIONS = await getQuestions(courseEnrolled, topic);
+    let GAME_QUESTIONS = await getQuestions(course, topic);
 
     res.send(GAME_QUESTIONS);
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: `Error fetching ${topic} questions` });
+  }
+});
+
+router.get("/questions-by-module", async (req: Request, res: Response) => {
+  const { topic, course, moduleId } = req.query as {
+    topic: Topic;
+    course: Course;
+    moduleId: string;
+  };
+
+  try {
+    const questions = await getQuestionsByModuleId(course, topic, moduleId);
+    /** example returned data
+     * {
+     *    _id: new ObjectId('696a3ca7611e04576a78b3a2'),
+     *    modules: [ { module_id: 'E1_1', questions: [Array] } ]
+     * }
+     * */
+    res.send(questions.modules[0]);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: `Error fetching ${topic} questions, ${error}` });
   }
 });
 
@@ -92,7 +108,7 @@ router.get("/baseline-questions", async (req: Request, res: Response) => {
 
 router.get("/admin-questions", async (req: Request, res: Response) => {
   try {
-    let GAME_QUESTIONS = (await fetchAdminQuestions()) as QuestionSchema;
+    let GAME_QUESTIONS = await fetchAdminQuestions();
     if (!GAME_QUESTIONS) {
       res.status(404).json({ message: `Question not found!` });
       return;

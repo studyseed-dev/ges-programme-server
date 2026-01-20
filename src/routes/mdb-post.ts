@@ -10,11 +10,11 @@ interface MongoError extends Error {
 
 router.post("/new-user", async (req: Request, res: Response) => {
   try {
-    const pl = {
+    const requestBody = {
       ...req.body,
       progress: initializeProgress(req.body.courses),
     };
-    const newUser = new User(pl);
+    const newUser = new User(requestBody);
     const result = await newUser.save();
     res.status(201).json(result);
   } catch (error) {

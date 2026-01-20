@@ -14,7 +14,7 @@ const questionSubSchema = new mongoose.Schema(
   }
 );
 
-const moduleSchema = new mongoose.Schema(
+const moduleSchema = new mongoose.Schema<Module>(
   {
     module_id: {
       type: String,
