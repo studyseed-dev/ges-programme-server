@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { User, IUser, SubjectScores, initializeProgress } from "../models";
-import { Course } from "../types/Course";
-import { Topic } from "../types/Topic";
+import { Course } from "../types/course";
+import { Topic } from "../types/topic";
 
 export const router = Router();
 
@@ -111,7 +111,7 @@ router.put("/init-progress-all", async (req: Request, res: Response) => {
 
       const result = await User.updateOne(
         { userid: user.userid },
-        { $set: { progress: progressPayload } }
+        { $set: { progress: progressPayload } },
       );
 
       if (result.matchedCount === 0) {
@@ -132,7 +132,7 @@ router.put("/init-progress-by-course", async (req: Request, res: Response) => {
       {
         userid,
       },
-      { _id: 0 }
+      { _id: 0 },
     );
 
     if (user) {
@@ -163,12 +163,12 @@ router.put("/init-progress-by-course", async (req: Request, res: Response) => {
               ...progressToUpdate,
             },
           },
-        }
+        },
       );
 
       res.status(200).send({
         message: `Successfully updated progress for ${userid} for ${JSON.stringify(
-          coursesToInclude
+          coursesToInclude,
         )}`,
         result,
       });

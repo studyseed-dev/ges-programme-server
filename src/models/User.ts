@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
-import { Course } from "../types/Course";
-import { Topic } from "../types/Topic";
+import { Course } from "../types/course";
+import { Topic } from "../types/topic";
 
 export interface IUser extends Document {
   userid: string;
@@ -52,7 +52,7 @@ const userSchema = new Schema<IUser>(
       required: false,
     },
   },
-  { minimize: false }
+  { minimize: false },
 );
 
 userSchema.pre("save", function (next) {

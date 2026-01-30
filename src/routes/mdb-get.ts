@@ -6,8 +6,8 @@ import { BaselineLiteracyQuestions, BaselineNumeracyQuestions, User } from "../m
 
 import { fetchAdminQuestions } from "../utils/helperFunctions";
 import { getQuestions, getQuestionsByModuleId } from "../utils/getQuestions";
-import { Course } from "../types/Course";
-import { Topic } from "../types/Topic";
+import { Course } from "../types/course";
+import { Topic } from "../types/topic";
 import { getActiveModuleIds } from "../utils/getActiveModulesByCourse";
 
 export const router = Router();
