@@ -6,8 +6,8 @@ import {
   GES2NumeracyQuestions,
   GES2LiteracyQuestions,
 } from "../models/QuestionModel";
-import { Course } from "../types/Course";
-import { Topic } from "../types/Topic";
+import { Course } from "../types/course";
+import { Topic } from "../types/topic";
 
 export const getActiveModuleIds = async (course: Course, topic: Topic): Promise<string[]> => {
   switch (course) {

@@ -7,8 +7,8 @@ import {
   GESLiteracyQuestions,
   GESNumeracyQuestions,
 } from "../models/QuestionModel";
-import { Course } from "../types/Course";
-import { Topic } from "../types/Topic";
+import { Course } from "../types/course";
+import { Topic } from "../types/topic";
 
 export const getQuestions = async (course: Course, topic: Topic): Promise<QuestionsPayload> => {
   switch (course) {
@@ -50,7 +50,7 @@ export const getQuestions = async (course: Course, topic: Topic): Promise<Questi
 export const getQuestionsByModuleId = async (
   course: Course,
   topic: Topic,
-  moduleId: string
+  moduleId: string,
 ): Promise<QuestionsPayload> => {
   switch (course) {
     case Course.GES:
@@ -58,12 +58,12 @@ export const getQuestionsByModuleId = async (
         case "NUMERACY":
           return (await GESNumeracyQuestions.findOne(
             { "modules.module_id": moduleId },
-            { "modules.$": 1 }
+            { "modules.$": 1 },
           ).lean()) as unknown as QuestionsPayload;
         case "LITERACY":
           return (await GESLiteracyQuestions.findOne(
             { "modules.module_id": moduleId },
-            { "modules.$": 1 }
+            { "modules.$": 1 },
           ).lean()) as unknown as QuestionsPayload;
         default:
           throw new Error(`Invalid topic: ${topic}`);
@@ -74,12 +74,12 @@ export const getQuestionsByModuleId = async (
         case "NUMERACY":
           return (await GES2NumeracyQuestions.findOne(
             { "modules.module_id": moduleId },
-            { "modules.$": 1 }
+            { "modules.$": 1 },
           ).lean()) as unknown as QuestionsPayload;
         case "LITERACY":
           return (await GES2LiteracyQuestions.findOne(
             { "modules.module_id": moduleId },
-            { "modules.$": 1 }
+            { "modules.$": 1 },
           ).lean()) as unknown as QuestionsPayload;
         default:
           throw new Error(`Invalid topic: ${topic}`);
@@ -90,12 +90,12 @@ export const getQuestionsByModuleId = async (
         case "NUMERACY":
           return (await GLPNumeracyQuestions.findOne(
             { "modules.module_id": moduleId },
-            { "modules.$": 1 }
+            { "modules.$": 1 },
           ).lean()) as unknown as QuestionsPayload;
         case "LITERACY":
           return (await GLPLiteracyQuestions.findOne(
             { "modules.module_id": moduleId },
-            { "modules.$": 1 }
+            { "modules.$": 1 },
           ).lean()) as unknown as QuestionsPayload;
         default:
           throw new Error(`Invalid topic: ${topic}`);
