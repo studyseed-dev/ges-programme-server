@@ -1,13 +1,8 @@
 import mongoose from "mongoose";
-import { Question } from "../services/gameData";
 
 export const baselineLevelSchema = {
   type: Array,
   of: Object,
-};
-
-export type BaselineQuestionSchema = {
-  [key: string]: Question[];
 };
 
 export const questionSchema = new mongoose.Schema({
