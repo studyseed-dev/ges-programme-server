@@ -24,22 +24,7 @@ router.get("/users", async (req: Request, res: Response) => {
 
 router.get("/find", async (req: Request, res: Response) => {
   try {
-    const token = req.cookies?.authToken;
-    const secret = process.env.JWT_SECRET as string;
-
-    if (!token) {
-      res.status(401).json({ message: "Unauthorized: Missing token in cookies!" });
-      return;
-    }
-    const { userid } = jwt.verify(token, secret) as JwtPayload & {
-      userid: string;
-    };
-    const { userid: queryUserid } = req.query;
-
-    if (userid !== queryUserid) {
-      res.status(403).json({ message: "Forbidden: User ID mismatch" });
-      return;
-    }
+    const { userid } = req.query;
 
     const user = await User.find({ userid }, { _id: 0 }).lean();
     if (!user) {
