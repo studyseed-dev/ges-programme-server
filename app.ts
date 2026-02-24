@@ -44,6 +44,11 @@ app.use("/mdb-create", postRouter);
 app.use("/mdb-update", putRouter);
 app.use("/authdb", MDBAuthRouter);
 
+// Health / ping endpoint for keep-alive checks
+app.get("/ping", (_req, res) => {
+  res.status(200).json({ ok: true, time: new Date().toISOString() });
+});
+
 // Start server
 app.listen(port, () => console.log(`Server is running on port ${port}`));
 
