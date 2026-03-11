@@ -1,3 +1,4 @@
+import { AdminQuestions } from "../models/AdminQuestions";
 import {
   QuestionsPayload,
   GLPNumeracyQuestions,
@@ -41,6 +42,9 @@ export const getQuestions = async (course: Course, topic: Topic): Promise<Questi
         default:
           throw new Error(`Invalid topic: ${topic}`);
       }
+
+    case Course.ADMIN:
+      return (await AdminQuestions.findOne().lean()) as unknown as QuestionsPayload;
 
     default:
       throw new Error(`Invalid course: ${course}`);
@@ -100,6 +104,12 @@ export const getQuestionsByModuleId = async (
         default:
           throw new Error(`Invalid topic: ${topic}`);
       }
+
+    case Course.ADMIN:
+      return (await AdminQuestions.findOne(
+        { "modules.module_id": moduleId },
+        { "modules.$": 1 },
+      ).lean()) as unknown as QuestionsPayload;
 
     default:
       throw new Error(`Invalid course: ${course}`);

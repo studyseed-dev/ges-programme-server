@@ -1,3 +1,4 @@
+import { AdminQuestions } from "../models/AdminQuestions";
 import {
   GESNumeracyQuestions,
   GESLiteracyQuestions,
@@ -40,6 +41,9 @@ export const getActiveModuleIds = async (course: Course, topic: Topic): Promise<
         default:
           throw new Error(`Invalid topic: ${topic}`);
       }
+
+    case Course.ADMIN:
+      return (await AdminQuestions.distinct("modules.module_id")) as unknown as string[];
 
     default:
       throw new Error(`Invalid course: ${course}`);

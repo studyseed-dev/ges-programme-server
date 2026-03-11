@@ -7,9 +7,10 @@ export interface IUser extends Document {
   first_name: string;
   last_name: string;
   courses: Topic[];
-  avatar: string;
   enrolled_courses: Course[];
   progress: Partial<ProgressModel>;
+  avatar?: string;
+  unlockedAvatars?: string[];
 }
 
 // course module name (EL1, L12...) is key and value is an array of tuples
@@ -41,15 +42,19 @@ const userSchema = new Schema<IUser>(
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },
     courses: { type: [String], required: true, enum: Topic },
-    avatar: {
-      type: String,
-      required: false,
-      default: "https://ik.imagekit.io/jbyap95/sam_colon.png",
-    },
     enrolled_courses: { type: [String], required: false, enum: Course },
     progress: {
       type: Schema.Types.Mixed,
       required: false,
+    },
+    avatar: {
+      type: String,
+      required: false,
+      default: "SEED",
+    },
+    unlockedAvatars: {
+      type: [String],
+      default: [],
     },
   },
   { minimize: false },
