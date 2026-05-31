@@ -58,6 +58,10 @@ export const GESNumeracyQuestions =
 export const GESLiteracyQuestions =
   mongoose.models.GESLiteracy || mongoose.model("GESLiteracy", questionSchema, "ges_literacy");
 
+// MACKLE Literacy Questions
+export const MACKLELiteracyQuestions =
+  mongoose.models.MACKLELiteracy || mongoose.model("MACKLELiteracy", questionSchema, "mackle_literacy");
+
 // Used for GET requests payload
 export type QuestionsPayload = {
   modules: Module[];

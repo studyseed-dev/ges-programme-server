@@ -6,6 +6,7 @@ import {
   GES2NumeracyQuestions,
   GESLiteracyQuestions,
   GESNumeracyQuestions,
+  MACKLELiteracyQuestions,
 } from "../models/QuestionModel";
 import { Course } from "../types/course";
 import { Topic } from "../types/topic";
@@ -38,6 +39,14 @@ export const getQuestions = async (course: Course, topic: Topic): Promise<Questi
           return (await GLPNumeracyQuestions.findOne().lean()) as unknown as QuestionsPayload;
         case "LITERACY":
           return (await GLPLiteracyQuestions.findOne().lean()) as unknown as QuestionsPayload;
+        default:
+          throw new Error(`Invalid topic: ${topic}`);
+      }
+
+    case Course.MACKLE:
+      switch (topic.toUpperCase()) {
+        case "LITERACY":
+          return (await MACKLELiteracyQuestions.findOne().lean()) as unknown as QuestionsPayload;
         default:
           throw new Error(`Invalid topic: ${topic}`);
       }
@@ -94,6 +103,17 @@ export const getQuestionsByModuleId = async (
           ).lean()) as unknown as QuestionsPayload;
         case "LITERACY":
           return (await GLPLiteracyQuestions.findOne(
+            { "modules.module_id": moduleId },
+            { "modules.$": 1 },
+          ).lean()) as unknown as QuestionsPayload;
+        default:
+          throw new Error(`Invalid topic: ${topic}`);
+      }
+
+    case Course.MACKLE:
+      switch (topic.toUpperCase()) {
+        case "LITERACY":
+          return (await MACKLELiteracyQuestions.findOne(
             { "modules.module_id": moduleId },
             { "modules.$": 1 },
           ).lean()) as unknown as QuestionsPayload;

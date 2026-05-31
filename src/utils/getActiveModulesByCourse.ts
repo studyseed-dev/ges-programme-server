@@ -5,6 +5,7 @@ import {
   GLPLiteracyQuestions,
   GES2NumeracyQuestions,
   GES2LiteracyQuestions,
+  MACKLELiteracyQuestions,
 } from "../models/QuestionModel";
 import { Course } from "../types/course";
 import { Topic } from "../types/topic";
@@ -37,6 +38,16 @@ export const getActiveModuleIds = async (course: Course, topic: Topic): Promise<
           return (await GLPNumeracyQuestions.distinct("modules.module_id")) as unknown as string[];
         case Topic.LITERACY:
           return (await GLPLiteracyQuestions.distinct("modules.module_id")) as unknown as string[];
+        default:
+          throw new Error(`Invalid topic: ${topic}`);
+      }
+
+    case Course.MACKLE:
+      switch (topic.toUpperCase()) {
+        case Topic.LITERACY:
+          return (await MACKLELiteracyQuestions.distinct(
+            "modules.module_id",
+          )) as unknown as string[];
         default:
           throw new Error(`Invalid topic: ${topic}`);
       }
