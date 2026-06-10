@@ -16,7 +16,7 @@ dotenv.config();
 
 const app = express();
 
-const port = 3001;
+const port = Number(process.env.PORT) || 3001;
 const swaggerDocument = YAML.load(fs.readFileSync("./src/openapi/ges.yaml", "utf8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument as JsonObject));
 
@@ -50,7 +50,7 @@ app.get("/ping", (_req, res) => {
 });
 
 // Start server
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+app.listen(port, "0.0.0.0", () => console.log(`Server is running on port ${port}`));
 
 // Connect to MongoDB
 mongoose
