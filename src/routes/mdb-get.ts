@@ -6,9 +6,9 @@ import { BaselineLiteracyQuestions, BaselineNumeracyQuestions, User } from "../m
 
 import { fetchAdminQuestions } from "../utils/helperFunctions";
 import { getQuestions, getQuestionsByModuleId } from "../utils/getQuestions";
-import { Course } from "../types/course";
 import { Topic } from "../types/topic";
 import { getActiveModuleIds } from "../utils/getActiveModulesByCourse";
+import { listCourses } from "../utils/courseRegistry";
 
 export const router = Router();
 router.use(cookieParser());
@@ -38,10 +38,20 @@ router.get("/find", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/courses", async (_req: Request, res: Response) => {
+  try {
+    const courses = await listCourses();
+    res.json({ data: courses });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch courses" });
+  }
+});
+
 router.get("/all-questions", async (req: Request, res: Response) => {
   const { topic, course } = req.query as {
     topic: Topic;
-    course: Course;
+    course: string;
   };
 
   try {
@@ -57,7 +67,7 @@ router.get("/all-questions", async (req: Request, res: Response) => {
 router.get("/questions-by-module", async (req: Request, res: Response) => {
   const { topic, course, moduleId } = req.query as {
     topic: Topic;
-    course: Course;
+    course: string;
     moduleId: string;
   };
 
@@ -109,7 +119,7 @@ router.get("/active-moduleIds", async (req: Request, res: Response) => {
   const { topic, course } = req.query as {
     week: string;
     topic: Topic;
-    course: Course;
+    course: string;
   };
 
   try {

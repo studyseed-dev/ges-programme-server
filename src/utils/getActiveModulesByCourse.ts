@@ -1,58 +1,18 @@
 import {
-  GESNumeracyQuestions,
-  GESLiteracyQuestions,
-  GLPNumeracyQuestions,
-  GLPLiteracyQuestions,
-  GES2NumeracyQuestions,
-  GES2LiteracyQuestions,
-  MACKLELiteracyQuestions,
-} from "../models/QuestionModel";
-import { Course } from "../types/course";
-import { Topic } from "../types/topic";
+  getAdminQuestionsCollection,
+  getRegistryQuestionCollection,
+  resolveCourseTopic,
+} from "./courseRegistry";
 
-export const getActiveModuleIds = async (course: Course, topic: Topic): Promise<string[]> => {
-  switch (course) {
-    case Course.GES:
-      switch (topic.toUpperCase()) {
-        case Topic.NUMERACY:
-          return (await GESNumeracyQuestions.distinct("modules.module_id")) as unknown as string[];
-        case Topic.LITERACY:
-          return (await GESLiteracyQuestions.distinct("modules.module_id")) as unknown as string[];
-        default:
-          throw new Error(`Invalid topic: ${topic}`);
-      }
+export const getActiveModuleIds = async (course: string, topic: string): Promise<string[]> => {
+  const resolved = await resolveCourseTopic(course, topic);
 
-    case Course.GES2:
-      switch (topic.toUpperCase()) {
-        case Topic.NUMERACY:
-          return (await GES2NumeracyQuestions.distinct("modules.module_id")) as unknown as string[];
-        case Topic.LITERACY:
-          return (await GES2LiteracyQuestions.distinct("modules.module_id")) as unknown as string[];
-        default:
-          throw new Error(`Invalid topic: ${topic}`);
-      }
-
-    case Course.GLP:
-      switch (topic.toUpperCase()) {
-        case Topic.NUMERACY:
-          return (await GLPNumeracyQuestions.distinct("modules.module_id")) as unknown as string[];
-        case Topic.LITERACY:
-          return (await GLPLiteracyQuestions.distinct("modules.module_id")) as unknown as string[];
-        default:
-          throw new Error(`Invalid topic: ${topic}`);
-      }
-
-    case Course.MACKLE:
-      switch (topic.toUpperCase()) {
-        case Topic.LITERACY:
-          return (await MACKLELiteracyQuestions.distinct(
-            "modules.module_id",
-          )) as unknown as string[];
-        default:
-          throw new Error(`Invalid topic: ${topic}`);
-      }
-
-    default:
-      throw new Error(`Invalid course: ${course}`);
+  if (resolved.isAdmin) {
+    return (await getAdminQuestionsCollection().distinct(
+      "modules.module_id",
+    )) as unknown as string[];
   }
+
+  const Collection = getRegistryQuestionCollection(resolved.course, resolved.topic);
+  return Collection.distinct("modules.module_id");
 };
