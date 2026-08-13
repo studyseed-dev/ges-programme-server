@@ -184,4 +184,62 @@ router.put("/init-progress-by-course", async (req: Request, res: Response) => {
   }
 });
 
+// Route to update user's avatar
+router.put("/avatar", async (req: Request<any>, res: Response) => {
+  try {
+    const { userid, avatar } = req.body;
+
+    if (!avatar) {
+      res.status(400).json({ message: "Avatar string is required" });
+      return;
+    }
+
+    const result = await User.findOneAndUpdate({ userid }, { $set: { avatar } }, { new: true });
+
+    if (!result) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Avatar updated successfully",
+      user: result,
+    });
+  } catch (error) {
+    console.error("Error updating avatar:", error);
+    res.status(500).json({ message: "Failed to update avatar", error });
+  }
+});
+
+// Route to update user's unlockedAvatars
+router.put("/unlockedAvatars", async (req: Request, res: Response) => {
+  try {
+    const { userid, unlockedAvatars } = req.body;
+
+    if (!unlockedAvatars || !Array.isArray(unlockedAvatars)) {
+      res.status(400).json({ message: "unlockedAvatars must be an array" });
+      return;
+    }
+
+    const result = await User.findOneAndUpdate(
+      { userid },
+      { $set: { unlockedAvatars } },
+      { new: true },
+    );
+
+    if (!result) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Unlocked avatars updated successfully",
+      user: result,
+    });
+  } catch (error) {
+    console.error("Error updating unlocked avatars:", error);
+    res.status(500).json({ message: "Failed to update unlocked avatars", error });
+  }
+});
+
 export default router;

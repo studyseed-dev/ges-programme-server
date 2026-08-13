@@ -33,11 +33,7 @@ router.post("/login", async (req: Request, res: Response) => {
   try {
     const userLogin = await User.findOne({ userid: parsedUserid?.userid });
     if (!userLogin) {
-      res.status(401).json({ message: "User does not exist!", operation: false });
-      return;
-    }
-    if (!userLogin?.enrolled_courses || userLogin.enrolled_courses.length <= 0) {
-      res.status(404).json({ message: "User not registered!", operation: false });
+      res.status(404).json({ message: "User does not exist!", operation: false });
       return;
     }
 
