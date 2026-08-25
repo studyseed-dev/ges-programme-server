@@ -29,7 +29,11 @@ app.use(cookieParser());
 
 const allowedOrigins =
   process.env.NODE_ENV === "production"
-    ? ([process.env.CLIENT_URL, process.env.BASELINE_URL] as string[])
+    ? ([
+        process.env.CLIENT_URL,
+        process.env.BASELINE_URL,
+        process.env.NETLIFY_SUBDOMAIN,
+      ] as string[])
     : ["http://localhost:3000"];
 
 app.use(
@@ -37,7 +41,7 @@ app.use(
     origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  })
+  }),
 );
 app.use("/mdb-read", getRouter);
 app.use("/mdb-create", postRouter);
