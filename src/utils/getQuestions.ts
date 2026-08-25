@@ -1,3 +1,4 @@
+import { AdminQuestions } from "../models/AdminQuestions";
 import {
   QuestionsPayload,
   GLPNumeracyQuestions,
@@ -114,6 +115,17 @@ export const getQuestionsByModuleId = async (
       switch (topic.toUpperCase()) {
         case "LITERACY":
           return (await MACKLELiteracyQuestions.findOne(
+            { "modules.module_id": moduleId },
+            { "modules.$": 1 },
+          ).lean()) as unknown as QuestionsPayload;
+        default:
+          throw new Error(`Invalid topic: ${topic}`);
+      }
+
+    case Course.ADMIN:
+      switch (topic.toUpperCase()) {
+        case "LITERACY":
+          return (await AdminQuestions.findOne(
             { "modules.module_id": moduleId },
             { "modules.$": 1 },
           ).lean()) as unknown as QuestionsPayload;
