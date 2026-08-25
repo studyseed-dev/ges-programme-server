@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import { User, IUser, SubjectScores, initializeProgress } from "../models";
-import { Course } from "../types/course";
 import { Topic } from "../types/topic";
 
 export const router = Router();
@@ -17,7 +16,7 @@ router.put("/progress", async (req: Request, res: Response) => {
     // user.progress[course][topic] gives {...}
     // might be empty
     // or { L1_1 : [], L2_1: []}
-    const currentTopic = user.progress?.[course as Course]?.[topic as Topic] as SubjectScores;
+    const currentTopic = user.progress?.[course]?.[topic as Topic] as SubjectScores;
 
     // check if currentModule and its score records already exists
     const currentModule = currentTopic[moduleId];
@@ -81,7 +80,7 @@ router.put("/init-progress/:id", async (req: Request<any>, res: Response) => {
 
     const enrolledCourses = existingUser?.enrolled_courses;
 
-    const progressPayload = initializeProgress(enrolledCourses as Course[]);
+    const progressPayload = initializeProgress(enrolledCourses ?? []);
     // Update the user document with the provided ID
     const result = await User.updateOne({ userid: id }, { $set: { progress: progressPayload } });
 
@@ -107,7 +106,7 @@ router.put("/init-progress-all", async (req: Request, res: Response) => {
 
     allUsers.forEach(async (user) => {
       const enrolledCourses = user.enrolled_courses;
-      const progressPayload = initializeProgress(enrolledCourses as Course[]);
+      const progressPayload = initializeProgress(enrolledCourses ?? []);
 
       const result = await User.updateOne(
         { userid: user.userid },
@@ -136,11 +135,11 @@ router.put("/init-progress-by-course", async (req: Request, res: Response) => {
     );
 
     if (user) {
-      let coursesToInclude = [] as Course[];
+      let coursesToInclude = [] as string[];
 
       for (const course of requestedCourses) {
         const hasEnrolledCurrentCourse = user.enrolled_courses.includes(course);
-        const hasCurrentProgress = user.progress[course as Course];
+        const hasCurrentProgress = user.progress[course];
 
         if (hasEnrolledCurrentCourse && !hasCurrentProgress) {
           coursesToInclude.push(course);

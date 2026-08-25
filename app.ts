@@ -8,6 +8,7 @@ import putRouter from "./src/routes/mdb-put";
 import MDBAuthRouter from "./src/auth/loginMDB";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { ensureLegacyCoursesSeeded } from "./src/utils/courseRegistrySeed";
 import YAML from "js-yaml";
 import swaggerUi, { JsonObject } from "swagger-ui-express";
 import fs from "fs";
@@ -16,7 +17,7 @@ dotenv.config();
 
 const app = express();
 
-const port = 3001;
+const port = Number(process.env.PORT) || 3001;
 const swaggerDocument = YAML.load(fs.readFileSync("./src/openapi/ges.yaml", "utf8"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument as JsonObject));
 
@@ -54,10 +55,14 @@ app.get("/ping", (_req, res) => {
 });
 
 // Start server
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+app.listen(port, "0.0.0.0", () => console.log(`Server is running on port ${port}`));
 
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGODB_URI as string)
-  .then(() => console.log("MongoDB connected!"))
+  .then(async () => {
+    console.log("MongoDB connected!");
+    await ensureLegacyCoursesSeeded();
+    console.log("Course registry seeded");
+  })
   .catch((err) => console.error("Connection error:", err));
